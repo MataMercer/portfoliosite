@@ -1,0 +1,196 @@
+// @import "../node_modules/normalize.css/normalize.css";
+@import "./BootstrapCustomVariables.scss";
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "./BootstrapCustomStyling.scss";
+@import "../node_modules/@fortawesome/fontawesome-svg-core/styles.css";
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&family=Recursive:wght@600&display=swap");
+
+$page-color: #faf6f2;
+
+
+body {
+  font-family: "Open Sans", "SF Pro Icons", "Helvetica", "Arial", sans-serif;
+  font-size: larger;
+  // padding: 20px 20px 60px;
+  // max-width: 680px;
+  // margin: 0 auto;
+  background-color: $page-color;
+}
+
+h1,
+h2 {
+  font-family: "Recursive", "Noto serif", "SF Pro Icons", "Helvetica", "Arial",
+    sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: $primary;
+  text-decoration-thickness: 0.1em;
+}
+
+hr {
+  background-color: $primary;
+  height: 0.05em;
+  border-radius: 1em;
+}
+
+.content {
+  max-width: 50em;
+  margin: 0 auto;
+  padding: 0.4em;
+}
+
+//   p{
+//     line-height: 1.2em;
+
+//   }
+
+//  nav{
+//   ul {
+//     list-style-type: none;
+//     margin: 0;
+//     padding: 0;
+//     overflow: hidden;
+//   }
+//  }
+
+//   .navbar-brand:hover{
+//     background-color: $primary-color;
+//     border-radius: 5em;
+//     color: white;
+//   }
+
+.navbar-brand-image {
+  width: 4em;
+}
+
+.navbar-brand-text {
+  font-family: "Recursive", "SF Pro Text", "SF Pro Icons", "Helvetica", "Arial",
+    sans-serif;
+  vertical-align: middle;
+  font-size: 1.5em;
+  padding-left: 0.25em;
+  margin-bottom: 1em;
+}
+
+//   .navbar-items{
+//     float: right;
+//   }
+
+//   .navbar-item {
+//     display: block;
+//     text-align: center;
+//     text-decoration: none;
+//   }
+
+/* Change the link color to #111 (black) on hover */
+// li a:hover {
+//   background-color: $primary-color;
+//   border-radius: 1em;
+//   color: white;
+
+// }
+
+header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  vertical-align: middle;
+}
+
+.navbar-items {
+  margin-bottom: 0px;
+  list-style: none;
+
+  vertical-align: middle;
+  li {
+    display: inline-block;
+    padding: 0px 20px;
+    border-radius: 3em;
+    margin-right: 1em;
+    a {
+      transition: all 0.3s ease 0s;
+      
+    }
+  }
+
+  li:hover {
+      background-color: $primary;
+      a{
+        color: white;
+        text-decoration: none;
+      }
+    }
+  
+}
+
+.navbar-brand {
+  margin-right: auto;
+  padding-right: 1em;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  transition: all 0.3s ease 0s;
+  border-radius: 3em;
+}
+
+.navbar-brand:hover {
+  background-color: $primary;
+
+  color: white;
+}
+
+nav {
+  order: 1;
+  vertical-align: middle;
+}
+
+article {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.project-entry-logo {
+  max-width: 2em;
+}
+
+.project-entry-screenshot {
+  width: 100%;
+
+  margin-top: 1em;
+}
+
+.project-entry {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 1em;
+  background-color: darken($color: $page-color, $amount: 4);
+  border-radius: 1em;
+  transition: all 0.3s ease 0s;
+}
+
+.project-entry:hover {
+  background-color: darken($color: $page-color, $amount: 10);
+  
+}
+
+footer{
+  
+  ul{
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding-left: 0px;
+    li{
+      margin: 1em;
+    }
+  }
+  text-align: center;
+}
+
+.progress-bar{
+  height: 5px;
+  background: var(--primary);
+  margin-top: 20px;
+}
