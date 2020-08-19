@@ -1,5 +1,5 @@
-import Layout from "../components/Layout";
-import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import Layout from '../components/Layout';
 
 export default function Contact() {
   return (
@@ -7,7 +7,10 @@ export default function Contact() {
       <Layout title="Contact">
         <h1 className="title">Contact Form</h1>
 
-        <p>I will try my best to respond within 24 hours. Alternatively, email me directly at developer.mercer@gmail.com.</p>
+        <p>
+          I will try my best to respond within 24 hours. Alternatively, email me
+          directly at developer.mercer@gmail.com.
+        </p>
 
         <Form action="https://formspree.io/xvowlgvo" method="POST">
           <FormGroup>
@@ -23,9 +26,10 @@ export default function Contact() {
             <Label for="exampleText">Message</Label>
             <Input type="textarea" name="message" id="message" />
           </FormGroup>
-          <Button color="primary" type="submit">Send</Button>
+          <Button color="primary" type="submit">
+            Send
+          </Button>
         </Form>
-
       </Layout>
     </div>
   );

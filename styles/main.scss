@@ -5,7 +5,7 @@
 @import "../node_modules/@fortawesome/fontawesome-svg-core/styles.css";
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans&family=Recursive:wght@600&display=swap");
 
-$page-color: #faf6f2;
+$page-color: #fafafa;
 
 
 body {
@@ -124,6 +124,13 @@ header {
       }
     }
   
+  .navbar-item-active{
+    background-color: $primary;
+      a{
+        color: white;
+        text-decoration: none;
+      }
+  }
 }
 
 .navbar-brand {
