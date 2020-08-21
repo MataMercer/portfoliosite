@@ -29,7 +29,7 @@ const NavBar = () => {
             }`}
           >
             <Link href="/">
-              <a>PROJECTS</a>
+              <a>Projects</a>
             </Link>
           </li>
           <li
@@ -38,7 +38,7 @@ const NavBar = () => {
             }`}
           >
             <Link href="/about">
-              <a>ABOUT</a>
+              <a>About</a>
             </Link>
           </li>
           <li
@@ -47,7 +47,7 @@ const NavBar = () => {
             }`}
           >
             <Link href="/contact">
-              <a>CONTACT</a>
+              <a>Contact</a>
             </Link>
           </li>
         </ul>
@@ -70,11 +70,11 @@ const AuthenticatedMenu = () => {
         }`}
       >
         <Link href="/admindashboard">
-          <a>DASHBOARD</a>
+          <a>Dashboard</a>
         </Link>
       </li>
       <li className="navbar-item" onClick={logout}>
-        LOGOUT
+        Logout
       </li>
     </ul>
   );

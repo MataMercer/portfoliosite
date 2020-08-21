@@ -28,7 +28,6 @@ export default function ProjectEntryList() {
         });
 
         setProjectEntries(tempProjectEntries);
-        console.log('derp');
         setLoading(false);
       });
   }, [database]);
@@ -39,7 +38,6 @@ export default function ProjectEntryList() {
 
   return (
     <div>
-      <h3>Categories</h3>
       {projectEntries.map((projectEntryRow, index) => {
         if (index % projectEntriesPerRow === 0) {
           return (
@@ -50,7 +48,7 @@ export default function ProjectEntryList() {
                   <Col sm="6">
                     <ProjectEntry
                       title={projectEntry.title}
-                      introDescription={projectEntry.description}
+                      introDescription={projectEntry.introDescription}
                       description={projectEntry.description}
                       repoLink={projectEntry.repoLink}
                       demoLink={projectEntry.demoLink}

@@ -10,7 +10,12 @@ import {
   Row,
   Col,
 } from 'reactstrap';
+import ReactMarkdown from 'react-markdown';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { IProjectEntry } from '../types/interfaces';
+import ThumbnailCarousel from './ThumbnailCarousel';
 
 const ProjectEntry = (props: IProjectEntry) => {
   const {
@@ -45,29 +50,54 @@ const ProjectEntry = (props: IProjectEntry) => {
             ) : null}
           </Col>
         </Row>
+        <div className="project-entry-text">
+          <Row>
+            <Col sm="auto">
+              <h4>
+                <strong>{title}</strong>
+              </h4>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm="auto">{introDescription}</Col>
+          </Row>
+        </div>
+      </Container>
+      <Modal
+        isOpen={modal}
+        toggle={toggle}
+        contentClassName="project-entry-modal"
+        centered
+        size="xl"
+      >
+        
         <Row>
-          <Col sm="auto">
-            <h4>
-              <strong>{title}</strong>
-            </h4>
+          <Col sm="8" className="project-entry-thumbnail-carousel-panel">
+            <ThumbnailCarousel pictureUrls={pictureUrls} />
+          </Col>
+          <Col sm="4" className="project-entry-thumbnail-text-panel">
+          <ModalBody>
+            <ModalHeader toggle={toggle}></ModalHeader>
+            
+              <h2>{title}</h2>
+              <ul>
+                <li>
+                  <a href={repoLink}>
+                    <FontAwesomeIcon icon={faGithub} /> Repository
+                  </a>
+                </li>
+                <li>
+                  <a href={repoLink}>
+                    <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
+                  </a>
+                </li>
+              </ul>
+              <ReactMarkdown source={description} />
+              </ModalBody>
           </Col>
         </Row>
-
-        <Row>
-          <Col sm="auto">{introDescription}</Col>
-        </Row>
-      </Container>
-      <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>{title}</ModalHeader>
-        <ModalBody>{description}</ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={toggle}>
-            Do Something
-          </Button>{' '}
-          <Button color="secondary" onClick={toggle}>
-            Cancel
-          </Button>
-        </ModalFooter>
+        
       </Modal>
     </div>
   );

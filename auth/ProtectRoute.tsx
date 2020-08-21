@@ -9,7 +9,7 @@ type ProtectRouteProps = {
 export default function ProtectRoute(
   Component: any
 ): React.FC<ProtectRouteProps> {
-  return function (...args) {
+  return (...args) => {
     const { isAuthenticated, loading } = useAuth();
 
     useEffect(() => {

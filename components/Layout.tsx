@@ -15,16 +15,15 @@ const Layout = ({ children, title }: LayoutProps) => (
     </Head>
 
     <div className="content">
-      <NavBar />
+      <div className="article-nav-container">
+        <NavBar />
 
-      <article>{children}</article>
-
+        <article>{children}</article>
+      </div>
       <footer>
-        <hr />
         <ul>
           <li>
             <a href="https://github.com/MataMercer">
-              {' '}
               <FontAwesomeIcon icon={faGithub} /> Github
             </a>
           </li>
