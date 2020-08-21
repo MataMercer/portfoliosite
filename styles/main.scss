@@ -107,7 +107,7 @@ header {
   li {
     display: inline-block;
     padding: 0px 20px;
-    border-radius: 0;
+    border-radius: 3em;
     margin-right: 1em;
     a {
       transition: all 0.3s ease 0s;
@@ -168,11 +168,12 @@ article {
   margin-top: 1em;
   margin-bottom: 1em;
   background-color: darken($color: $page-color, $amount: 4);
-  border-radius: 0;
+  border-radius: 2em;
   transition: all 0.3s ease 0s;
   font-size: medium;
+  padding: 1.5em;
   .project-entry-text {
-    padding: 1em;
+    padding-top: 1.5em;
   }
   img{
     transition: all 0.3s ease 0s;
@@ -208,24 +209,48 @@ article {
 
 }
 .project-entry-thumbnail-carousel-panel{
-  background-color:#070707;
+  background-color:#1E1E24;
   padding: 0;
 }
 
 .project-entry-thumbnail-text-panel{
   padding: 0;
 }
+select {
+  visibility: hidden;
+}
 
 .thumbnail-carousel-nav{
-  justify-content: center;
-
+  padding: 0.5em;
   .btn{
     border-radius: 0;
+    border:none;
+    font-size: x-large;
   }
+  
 }
 
 .thumbnail-carousel-nav-item{
-  width: 5em;
+  
+  background-color:rgba(0, 0, 0, 0);
+  border: none;
+  padding: 0;
+  img{
+    width: 5em;
+    filter: brightness(70%);
+  }
+  
+}
+
+.thumbnail-carousel-nav-item-active{
+  img{
+    filter: brightness(100%);
+  }
+  border-style: solid;
+  border-color: $primary;
+  background-color: $primary;
+  border-width: 0.3em;
+  
 }
 
 .article-nav-container{

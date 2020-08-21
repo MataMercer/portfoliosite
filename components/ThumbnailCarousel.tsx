@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Row, Col } from 'reactstrap';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type ThumbnailCarouselProps = {
@@ -20,10 +20,25 @@ const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
     }
   };
 
-  const handleNavItemClick = () =>{
+  const handleDirectionKeyPress = (e: KeyboardEvent) => {
+    const LEFT_KEY = 37;
+    const RIGHT_KEY = 39;
+    if (e.keyCode === LEFT_KEY && index - 1 >= 0) {
+      setIndex(index - 1);
+    }
+    if (e.keyCode === RIGHT_KEY && index + 1 < pictureUrls.length) {
+      setIndex(index + 1);
+    }
+  };
 
-  }
-  
+  useEffect(() => {
+    document.addEventListener('keydown', handleDirectionKeyPress, false);
+
+    return () => {
+      document.removeEventListener('keydown', handleDirectionKeyPress, false);
+    };
+  });
+
   return (
     <>
       <img
@@ -38,16 +53,22 @@ const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
           onClick={handleDirectionClick}
         >
           <FontAwesomeIcon
-            icon={faArrowLeft}
+            icon={faAngleLeft}
             style={{ pointerEvents: 'none' }}
           />
         </Button>
-        {pictureUrls.map((pictureUrl) => (
-          <img
-            className="thumbnail-carousel-nav-item"
-            alt="thumbnail for selection"
-            src={pictureUrl}
-          />
+        {pictureUrls.map((pictureUrl, i) => (
+          <button
+            className={`thumbnail-carousel-nav-item ${
+              i === index ? 'thumbnail-carousel-nav-item-active' : ''
+            }`}
+            type="button"
+            onClick={() => {
+              setIndex(i);
+            }}
+          >
+            <img alt="thumbnail for selection" src={pictureUrl} />
+          </button>
         ))}
         <Button
           value="right"
@@ -55,7 +76,7 @@ const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
           onClick={handleDirectionClick}
         >
           <FontAwesomeIcon
-            icon={faArrowRight}
+            icon={faAngleRight}
             style={{ pointerEvents: 'none' }}
           />
         </Button>
