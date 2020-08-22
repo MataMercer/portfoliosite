@@ -71,15 +71,14 @@ const ProjectEntry = (props: IProjectEntry) => {
         centered
         size="xl"
       >
-        
         <Row>
-          <Col sm="8" className="project-entry-thumbnail-carousel-panel">
+          <Col lg="8" className="project-entry-thumbnail-carousel-panel">
             <ThumbnailCarousel pictureUrls={pictureUrls} />
           </Col>
-          <Col sm="4" className="project-entry-thumbnail-text-panel">
-          <ModalBody>
-            <ModalHeader toggle={toggle}></ModalHeader>
-            
+          <Col lg="4" className="project-entry-thumbnail-text-panel">
+            <ModalBody>
+              <ModalHeader toggle={toggle}></ModalHeader>
+
               <h2>{title}</h2>
               <ul>
                 <li>
@@ -94,10 +93,9 @@ const ProjectEntry = (props: IProjectEntry) => {
                 </li>
               </ul>
               <ReactMarkdown source={description} />
-              </ModalBody>
+            </ModalBody>
           </Col>
         </Row>
-        
       </Modal>
     </div>
   );

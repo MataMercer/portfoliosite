@@ -1,4 +1,5 @@
 export interface IProjectEntry {
+  id: string;
   title: string;
   introDescription: string;
   description: string;

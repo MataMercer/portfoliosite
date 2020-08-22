@@ -5,9 +5,9 @@ import ProjectEntryForm from '../components/forms/ProjectEntryForm';
 function ProjectEntryFormPage() {
   return (
     <div>
-      <Layout title="Manage About Page">
+      <Layout title="Project Entry Form">
         <h1>New Project Entry</h1>
-        <ProjectEntryForm />
+        <ProjectEntryForm projectEntryId="" />
       </Layout>
     </div>
   );

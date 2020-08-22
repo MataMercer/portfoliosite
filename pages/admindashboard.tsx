@@ -17,6 +17,7 @@ import {
 import classnames from 'classnames';
 import Layout from '../components/Layout';
 import ProtectRoute from '../auth/ProtectRoute';
+import ProjectEntryList from '../components/dashboard/ProjectEntryList';
 
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<string>('1');
@@ -64,11 +65,13 @@ function AdminDashboard() {
               <Row>
                 <Col sm="12">
                   <Card body>
-                    <Button>
-                      <Link href="/projectentryformpage">
-                        <a>Add New Project Entry</a>
-                      </Link>
-                    </Button>
+                    <Link href="/projectentryformpage">
+                      <a>
+                        <Button>Add New Project Entry</Button>
+                      </a>
+                    </Link>
+
+                    <ProjectEntryList />
                   </Card>
                 </Col>
               </Row>
@@ -77,11 +80,7 @@ function AdminDashboard() {
               <Row>
                 <Col sm="12">
                   <Card body>
-                    <CardTitle>Special Title Treatment</CardTitle>
-                    <CardText>
-                      With supporting text below as a natural lead-in to
-                      additional content.
-                    </CardText>
+                    <CardTitle>Change About Page</CardTitle>
 
                     <Link href="/aboutformpage">
                       <a>

@@ -47,6 +47,7 @@ export default function ProjectEntryList() {
                 .map((projectEntry: IProjectEntry) => (
                   <Col sm="6">
                     <ProjectEntry
+                      id={projectEntry.id}
                       title={projectEntry.title}
                       introDescription={projectEntry.introDescription}
                       description={projectEntry.description}
