@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2020: true,
+    'jest/globals': true,
   },
   extends: [
     'plugin:react/recommended',
@@ -20,7 +21,7 @@ module.exports = {
     ecmaVersion: 11,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: ['react', '@typescript-eslint', 'jest', 'prettier'],
   rules: {
     'jsx-a11y/anchor-is-valid': 'off',
     // incompatible with NextJS links that require anchor tags with no href.

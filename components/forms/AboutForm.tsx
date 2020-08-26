@@ -11,21 +11,21 @@ function AboutForm() {
     setAboutText(e.target.value);
   };
 
-  async function getAboutPage() {
-    const aboutPageRef = database?.collection('pages').doc('about');
-    return aboutPageRef?.get().then((doc) => {
-      if (doc.exists) {
-        return doc?.data()?.content;
-      }
-      return 'This page is under construction';
-    });
-  }
-
   useEffect(() => {
+    async function getAboutPage() {
+      const aboutPageRef = database?.collection('pages').doc('about');
+      return aboutPageRef?.get().then((doc) => {
+        if (doc.exists) {
+          return doc?.data()?.content;
+        }
+        return 'This page is under construction';
+      });
+    }
+
     getAboutPage().then((res) => {
       setAboutText(res);
     });
-  });
+  }, [setAboutText, database]);
 
   async function updateAboutPage(content: string) {
     const aboutPageRef = database?.collection('pages').doc('about');

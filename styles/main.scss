@@ -6,7 +6,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Recursive:wght@600&display=swap');
 
 $page-color: #fafafa;
-
+$black-color: #272727;
 body {
   font-family: 'Open Sans', 'SF Pro Icons', 'Helvetica', 'Arial', sans-serif;
   font-size: larger;
@@ -175,13 +175,10 @@ article {
   .project-entry-text {
     padding-top: 1.5em;
   }
-  img{
+  img {
     transition: all 0.3s ease 0s;
   }
-  
 }
-
-
 
 .project-entry:hover {
   background-color: darken($color: $page-color, $amount: 10);
@@ -194,65 +191,59 @@ article {
   padding: 0;
   border: none;
   font-size: medium;
-  ul{
+  ul {
     list-style: none;
     padding-left: 0px;
   }
 
-  .modal-body{
-
+  .modal-body {
   }
 
-  .row{
-    margin:0;
+  .row {
+    margin: 0;
   }
-
 }
-.project-entry-thumbnail-carousel-panel{
-  background-color:#1E1E24;
+.project-entry-thumbnail-carousel-panel {
+  background-color: #1e1e24;
   padding: 0;
 }
 
-.project-entry-thumbnail-text-panel{
+.project-entry-thumbnail-text-panel {
   padding: 0;
 }
 select {
   visibility: hidden;
 }
 
-.thumbnail-carousel-nav{
+.thumbnail-carousel-nav {
   padding: 0.5em;
-  .btn{
+  .btn {
     border-radius: 0;
-    border:none;
+    border: none;
     font-size: x-large;
   }
-  
 }
 
-.thumbnail-carousel-nav-item{
-  
-  background-color:rgba(0, 0, 0, 0);
+.thumbnail-carousel-nav-item {
+  background-color: rgba(0, 0, 0, 0);
   border: none;
   padding: 0;
-  img{
+  img {
     width: 5em;
     filter: brightness(70%);
   }
-  
 }
 
-.thumbnail-carousel-nav-item-active{
-  img{
+.thumbnail-carousel-nav-item-active {
+  img {
     filter: brightness(100%);
   }
   border-style: solid;
   border-color: $primary;
   border-width: 0.3em;
-  
 }
 
-.article-nav-container{
+.article-nav-container {
   min-height: 80vh;
 }
 
