@@ -14,7 +14,7 @@ import ReactMarkdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { IProjectEntry } from '../types/interfaces';
+import { IProjectEntry } from '../ModelTypes/interfaces';
 import ThumbnailCarousel from './ThumbnailCarousel';
 
 const ProjectEntry = (props: IProjectEntry) => {
@@ -77,7 +77,7 @@ const ProjectEntry = (props: IProjectEntry) => {
           </Col>
           <Col lg="4" className="project-entry-thumbnail-text-panel">
             <ModalBody>
-              <ModalHeader toggle={toggle}></ModalHeader>
+              <ModalHeader toggle={toggle} />
 
               <h2>{title}</h2>
               <ul>

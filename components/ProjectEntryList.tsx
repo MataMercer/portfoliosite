@@ -2,39 +2,20 @@ import { Row, Col } from 'reactstrap';
 import { FirebaseError } from 'firebase';
 import { useState, useEffect, useCallback } from 'react';
 // eslint-disable-next-line no-unused-vars
-import { useFirebase } from '../firebase/FirebaseContext';
-import { IProjectEntry } from '../types/interfaces';
+import { IProjectEntry } from '../ModelTypes/interfaces';
 import ProjectEntry from './ProjectEntry';
+import { getProjectEntries } from '../firebase/repositories/ProjectEntryRepository';
 
 export default function ProjectEntryList() {
   const [errors, setErrors] = useState<FirebaseError>();
   const [projectEntries, setProjectEntries] = useState<IProjectEntry[]>([]);
-  const { database } = useFirebase();
   const projectEntriesPerRow = 2;
   const [loading, setLoading] = useState(true);
-
-  const getProjectEntries = useCallback(() => {
-    database
-      ?.collection('projectentries')
-      .get()
-      .then((querySnapshot) => {
-        let tempProjectEntries: IProjectEntry[] = [];
-        querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          tempProjectEntries = [
-            ...tempProjectEntries,
-            doc.data() as IProjectEntry,
-          ];
-        });
-
-        setProjectEntries(tempProjectEntries);
-        setLoading(false);
-      });
-  }, [database]);
-
   useEffect(() => {
-    getProjectEntries();
-  }, [getProjectEntries]);
+    getProjectEntries().then((res) => {
+      setProjectEntries(res);
+    });
+  }, []);
 
   return (
     <div>

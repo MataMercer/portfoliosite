@@ -3,21 +3,19 @@ import { ListGroupItem, Row, Col, Button } from 'reactstrap';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { IProjectEntry } from '../../types/interfaces';
-import { useFirebase } from '../../firebase/FirebaseContext';
-import ProjectEntry from '../ProjectEntry';
+import { FirebaseError } from 'firebase';
+import { IProjectEntry } from '../../ModelTypes/interfaces';
+import { deleteProjectEntry } from '../../firebase/repositories/ProjectEntryRepository';
+import { deleteFile } from '../../firebase/repositories/StorageRepository';
+import ErrorAlert from '../ErrorAlert';
 
 type ProjectEntryListItemProps = {
   projectEntry: IProjectEntry;
-  deleteProjectEntry: (id: string) => void;
 };
 
-const ProjectEntryListItem = ({
-  projectEntry,
-  deleteProjectEntry,
-}: ProjectEntryListItemProps) => {
+const ProjectEntryListItem = ({ projectEntry }: ProjectEntryListItemProps) => {
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
-  const { database } = useFirebase();
+  const [errors, setErrors] = useState<FirebaseError[]>([]);
 
   const handleTrashcanButtonClick = (
     e: React.MouseEvent<HTMLButtonElement>
@@ -30,11 +28,29 @@ const ProjectEntryListItem = ({
   };
 
   const handleDeleteButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    deleteProjectEntry(projectEntry.id);
+    if (projectEntry?.id) {
+      setShowDeleteWarning(false);
+      let errored = false;
+      try {
+        projectEntry.pictureUrls.map((url) => deleteFile(url));
+      } catch (err) {
+        errored = true;
+        setErrors([...errors, err]);
+      }
+      if (errored) {
+        return;
+      }
+      deleteProjectEntry(projectEntry.id).catch((err) => {
+        setErrors([...errors, err]);
+      });
+    }
   };
 
   return (
     <ListGroupItem>
+      <Row>
+        <ErrorAlert errors={errors} />
+      </Row>
       <Row>
         <Col sm="10">
           <Row>

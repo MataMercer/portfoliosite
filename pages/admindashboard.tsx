@@ -10,7 +10,6 @@ import {
   NavLink,
   Card,
   CardTitle,
-  CardText,
   Row,
   Col,
 } from 'reactstrap';

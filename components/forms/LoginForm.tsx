@@ -3,6 +3,7 @@ import { Alert, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 // eslint-disable-next-line no-unused-vars
 import { FirebaseError } from 'firebase';
 import { useAuth } from '../../auth/auth';
+import ErrorAlert from '../ErrorAlert';
 
 export default function LoginForm() {
   const { login } = useAuth();
@@ -20,8 +21,7 @@ export default function LoginForm() {
 
   return (
     <Form onSubmit={handleFormSubmit}>
-      {error ? <Alert color="danger">{error?.message}</Alert> : null}
-
+      <ErrorAlert errors={error ? [error] : []} />
       <FormGroup>
         <Label for="email">Email</Label>
         <Input

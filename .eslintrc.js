@@ -23,6 +23,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'jest', 'prettier'],
   rules: {
+    'prettier/prettier': 'warn',
     'jsx-a11y/anchor-is-valid': 'off',
     // incompatible with NextJS links that require anchor tags with no href.
     'import/no-extraneous-dependencies': 'off',

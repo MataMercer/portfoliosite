@@ -1,48 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input } from 'reactstrap';
+import { Button, Form, Input, Spinner } from 'reactstrap';
+import Router from 'next/router';
+import { FirebaseError } from 'firebase';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
-import { useFirebase } from '../../firebase/FirebaseContext';
+import {
+  getAboutPage,
+  updateAboutPage,
+} from '../../firebase/repositories/AboutPageRepository';
+import ErrorAlert from '../ErrorAlert';
 
 function AboutForm() {
   const [aboutText, setAboutText] = useState<string>('');
-  const { database } = useFirebase();
+  const [status, setStatus] = useState<
+    'idle' | 'loading' | 'submitting' | 'error'
+  >('loading');
+  const [errors, setErrors] = useState<FirebaseError[]>([]);
 
   const handleAboutTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAboutText(e.target.value);
   };
 
   useEffect(() => {
-    async function getAboutPage() {
-      const aboutPageRef = database?.collection('pages').doc('about');
-      return aboutPageRef?.get().then((doc) => {
-        if (doc.exists) {
-          return doc?.data()?.content;
-        }
-        return 'This page is under construction';
-      });
+    if (status === 'loading') {
+      getAboutPage()
+        .then((res) => {
+          setAboutText(res);
+          setStatus('idle');
+        })
+        .catch((err) => {
+          setStatus('error');
+          setErrors([...errors, err]);
+        });
     }
+  }, []);
 
-    getAboutPage().then((res) => {
-      setAboutText(res);
-    });
-  }, [setAboutText, database]);
-
-  async function updateAboutPage(content: string) {
-    const aboutPageRef = database?.collection('pages').doc('about');
-    return aboutPageRef?.set({
-      content,
-    });
-  }
-
-  const handleFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    updateAboutPage(aboutText);
+    setStatus('submitting');
+    await updateAboutPage(aboutText)
+      .then(() => {
+        setStatus('idle');
+        Router.push('/admindashboard');
+      })
+      .catch((err) => {
+        setErrors([...errors, err]);
+        setStatus('error');
+      });
   };
 
   return (
     <>
       <Form onSubmit={handleFormSubmit}>
+        <ErrorAlert errors={errors} />
         <MarkdownEditorInput
           label="About Page Content"
           name="aboutText"
@@ -50,9 +59,15 @@ function AboutForm() {
           handleTextChange={handleAboutTextChange}
           text={aboutText}
         />
-        <Button color="primary" type="submit">
+
+        <Button
+          color="primary"
+          type="submit"
+          disabled={status === 'loading' || status === 'submitting'}
+        >
           Save
         </Button>
+        {status === 'submitting' ? <Spinner /> : null}
       </Form>
     </>
   );

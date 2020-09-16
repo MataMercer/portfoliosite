@@ -1,10 +1,28 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
+import {
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Spinner,
+  Alert,
+} from 'reactstrap';
 import Router from 'next/router';
+import { FirebaseError } from 'firebase';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
-import { useFirebase } from '../../firebase/FirebaseContext';
 import UploadInput from '../inputs/UploadInput';
-import { IProjectEntry } from '../../types/interfaces';
+import { IProjectEntry } from '../../ModelTypes/interfaces';
+import {
+  getProjectEntry,
+  createProjectEntry,
+  updateProjectEntry,
+} from '../../firebase/repositories/ProjectEntryRepository';
+import {
+  deleteFile,
+  uploadFile,
+} from '../../firebase/repositories/StorageRepository';
+import ErrorAlert from '../ErrorAlert';
 
 type ProjectEntryFormProps = {
   projectEntryId: string;
@@ -20,47 +38,34 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
   const [pictures, setPictures] = useState<File[]>([]);
   const [pictureUrls, setPictureUrls] = useState<string[]>([]);
   const [existingPictureUrls, setExistingPictureUrls] = useState<string[]>([]);
-  const { database, storage } = useFirebase();
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<
+    'idle' | 'loading' | 'submitting' | 'error'
+  >('loading');
+  const [errors, setErrors] = useState<FirebaseError[]>([]);
+
+  const disabled = () => {
+    return status === 'submitting' || status === 'loading';
+  };
 
   const handleFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setErrors([]);
+    setStatus('submitting');
     const uploadPictures = async (picturesToUpload: File[]) => {
-      const asyncPictureUpload = async (picture: File) => {
-        // references
-        const storageRef = storage?.ref(picture.name);
-        const collectionRef = database?.collection('images');
-
-        await storageRef?.put(picture);
-        const url = await storageRef?.getDownloadURL();
-        await collectionRef?.add({ url });
-        return url;
-      };
-
       return Promise.all(
-        picturesToUpload.map((picture: File) => asyncPictureUpload(picture))
+        picturesToUpload.map((picture: File) =>
+          uploadFile(picture).catch((error: FirebaseError) => error)
+        )
       );
     };
 
     const deletePictures = async () => {
-      const asyncPictureDelete = async (pictureUrl: string) => {
-        const pictureRef = storage?.refFromURL(pictureUrl);
-
-        // Delete the file
-        pictureRef
-          ?.delete()
-          .then(function () {
-            // File deleted successfully
-          })
-          .catch(function (error) {
-            // Uh-oh, an error occurred!
-          });
-      };
       return Promise.all(
         existingPictureUrls.map((existingPictureUrl) => {
           if (!pictureUrls.includes(existingPictureUrl)) {
-            return asyncPictureDelete(existingPictureUrl);
+            return deleteFile(existingPictureUrl).catch(
+              (error: FirebaseError) => error
+            );
           }
           return null;
         })
@@ -68,78 +73,136 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
     };
 
     const asyncSubmit = async () => {
-      setLoading(true);
-      await deletePictures();
-      const uploadedPictureUrls = await uploadPictures(pictures);
+      let errored = false;
+      const successUploadedPictureUrls = (
+        await uploadPictures(pictures)
+      ).filter((url) => {
+        if (url instanceof Error) {
+          setErrors([...errors, url as FirebaseError]);
+          errored = true;
+          return false;
+        }
+        return true;
+      });
+
+      // Clean up if errored
+      if (errored) {
+        successUploadedPictureUrls.forEach((url) => {
+          deleteFile(url).catch((err) => {
+            setErrors([...errors, err]);
+          });
+        });
+        setStatus('error');
+        return;
+      }
+
+      const deleteResponses = await deletePictures();
+      deleteResponses.forEach((res) => {
+        if (res instanceof Error) {
+          setErrors([...errors, res as FirebaseError]);
+          errored = true;
+        } else {
+          existingPictureUrls.filter((url) => url === res);
+        }
+      });
+
+      // clean up if errored.
+      if (errored) {
+        successUploadedPictureUrls.forEach((url) => {
+          deleteFile(url).catch((err) => {
+            setErrors([...errors, err]);
+          });
+        });
+        setStatus('error');
+        return;
+      }
+
       if (projectEntryId) {
-        const projectEntriesRef = database
-          ?.collection('projectentries')
-          .doc(projectEntryId);
-        projectEntriesRef
-          ?.set({
-            title,
-            introDescription,
-            description,
-            repoLink,
-            demoLink,
-            pictureUrls: [...pictureUrls, ...uploadedPictureUrls],
-          })
+        updateProjectEntry({
+          title,
+          introDescription,
+          description,
+          repoLink,
+          demoLink,
+          pictureUrls: [...pictureUrls, ...successUploadedPictureUrls],
+        })
           .then(() => {
             Router.push('/admindashboard');
+          })
+          .catch((err) => {
+            successUploadedPictureUrls.forEach((url) => {
+              deleteFile(url).catch((err2) => {
+                setErrors([...errors, err2]);
+              });
+            });
+
+            deleteResponses.forEach((res) => {
+              existingPictureUrls.filter((url) => res === url);
+            });
+            setStatus('error');
+            setErrors([...errors, err]);
           });
       } else {
-        const projectEntriesRef = database?.collection('projectentries');
-
-        projectEntriesRef
-          ?.add({
-            title,
-            introDescription,
-            description,
-            repoLink,
-            demoLink,
-            pictureUrls,
-          })
+        createProjectEntry({
+          title,
+          description,
+          introDescription,
+          repoLink,
+          demoLink,
+          pictureUrls: successUploadedPictureUrls,
+        })
           .then(() => {
             Router.push('/admindashboard');
+          })
+          .catch((err) => {
+            successUploadedPictureUrls.forEach((url) => {
+              deleteFile(url).catch((err2) => {
+                setErrors([...errors, err2]);
+              });
+            });
+
+            deleteResponses.forEach((res) => {
+              existingPictureUrls.filter((url) => res === url);
+            });
+            setStatus('error');
+            setErrors([...errors, err]);
           });
       }
+      setStatus('idle');
     };
-
     asyncSubmit();
   };
 
   useEffect(() => {
-    if (projectEntryId) {
-      setLoading(true);
-      const projectEntryRef = database
-        ?.collection('projectentries')
-        .doc(projectEntryId);
-      projectEntryRef?.get().then((doc) => {
-        if (doc.exists) {
-          const projectEntry = doc?.data() as IProjectEntry;
-          setTitle(projectEntry?.title);
-          setDescription(projectEntry?.description);
-          setIntroDescription(projectEntry?.introDescription);
-          setExistingPictureUrls(projectEntry?.pictureUrls);
-          setPictureUrls(projectEntry?.pictureUrls);
-          setDemoLink(projectEntry?.demoLink);
-          setRepoLink(projectEntry?.repoLink);
-        }
-        setLoading(false);
-      });
+    if (projectEntryId && status === 'loading') {
+      getProjectEntry(projectEntryId)
+        .then((projectEntry) => {
+          if (projectEntry) {
+            setTitle(projectEntry.title);
+            setIntroDescription(projectEntry.introDescription);
+            setDescription(projectEntry.description);
+            setDemoLink(projectEntry.demoLink);
+            setRepoLink(projectEntry.repoLink);
+            setExistingPictureUrls(projectEntry.pictureUrls);
+            setPictureUrls(projectEntry.pictureUrls);
+          } else {
+            throw new Error('This project entry does not or no longer exists');
+          }
+        })
+        .catch((err) => {
+          setErrors([...errors, err]);
+        })
+        .finally(() => {
+          setStatus('idle');
+        });
+    } else if (status === 'loading') {
+      setStatus('idle');
     }
-  }, [
-    database,
-    projectEntryId,
-    setDemoLink,
-    setRepoLink,
-    setDescription,
-    setExistingPictureUrls,
-  ]);
-
+  }, [projectEntryId, status]);
   return (
     <>
       <Form onSubmit={handleFormSubmit}>
+        <ErrorAlert errors={errors} />
         <FormGroup>
           <Label for="title">Title</Label>
           <Input
@@ -147,7 +210,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
             name="title"
             id="title"
             value={title}
-            disabled={loading}
+            disabled={disabled()}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setTitle(e.target.value)
             }
@@ -161,7 +224,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
             name="repoLink"
             id="repoLink"
             value={repoLink}
-            disabled={loading}
+            disabled={disabled()}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setRepoLink(e.target.value)
             }
@@ -175,7 +238,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
             name="demoLink"
             id="demoLink"
             value={demoLink}
-            disabled={loading}
+            disabled={disabled()}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setDemoLink(e.target.value)
             }
@@ -188,7 +251,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
             name="introDescription"
             id="introDescription"
             value={introDescription}
-            disabled={loading}
+            disabled={disabled()}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setIntroDescription(e.target.value)
             }
@@ -215,10 +278,10 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
           />
         </FormGroup>
 
-        <Button color="primary" type="submit" disabled={loading}>
+        <Button color="primary" type="submit" disabled={disabled()}>
           save
         </Button>
-        {loading ? <Spinner /> : null}
+        {status === 'submitting' ? <Spinner /> : null}
       </Form>
     </>
   );
