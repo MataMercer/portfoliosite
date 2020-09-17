@@ -4,6 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import { Button } from 'reactstrap';
 
 type UploadInputProps = {
+  id: string;
   pictures: File[];
   pictureUrls: string[];
   setPictures: (pictures: File[]) => void;
@@ -12,6 +13,7 @@ type UploadInputProps = {
 };
 
 const UploadInput = ({
+  id,
   pictures,
   setPictures,
   pictureUrls,
@@ -80,7 +82,7 @@ const UploadInput = ({
   return (
     <>
       <div {...getRootProps()}>
-        <input {...getInputProps()} />
+        <input id={id} {...getInputProps()} />
 
         <p>[Drag and drop some files here, or click to select files]</p>
       </div>

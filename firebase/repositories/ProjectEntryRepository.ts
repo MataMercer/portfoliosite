@@ -9,6 +9,7 @@ const getProjectEntry = async (projectEntryId: string) => {
     ?.get();
   if (doc.exists && doc) {
     const projectEntry = doc.data() as IProjectEntry;
+    projectEntry.id = doc.id;
     return projectEntry;
   }
   return null;
@@ -21,7 +22,9 @@ const getProjectEntries = async () => {
   let tempProjectEntries: IProjectEntry[] = [];
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
-    tempProjectEntries = [...tempProjectEntries, doc.data() as IProjectEntry];
+    const projectEntry = doc.data() as IProjectEntry;
+    projectEntry.id = doc.id;
+    tempProjectEntries = [...tempProjectEntries, projectEntry];
   });
   return tempProjectEntries;
 };

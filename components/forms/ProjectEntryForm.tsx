@@ -198,7 +198,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
     } else if (status === 'loading') {
       setStatus('idle');
     }
-  }, [projectEntryId, status]);
+  }, [errors, projectEntryId, status]);
   return (
     <>
       <Form onSubmit={handleFormSubmit}>
@@ -271,6 +271,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
         <FormGroup>
           <Label for="pictures">Pictures</Label>
           <UploadInput
+            id="pictures"
             setPictures={setPictures}
             pictures={pictures}
             setPictureUrls={setPictureUrls}

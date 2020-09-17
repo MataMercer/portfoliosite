@@ -5,17 +5,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FirebaseError } from 'firebase';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
-import { deleteProjectEntry } from '../../firebase/repositories/ProjectEntryRepository';
 import { deleteFile } from '../../firebase/repositories/StorageRepository';
 import ErrorAlert from '../ErrorAlert';
 
 type ProjectEntryListItemProps = {
   projectEntry: IProjectEntry;
+  deleteProjectEntryAndCleanUpFiles: (projectEntry: IProjectEntry) => void;
 };
 
-const ProjectEntryListItem = ({ projectEntry }: ProjectEntryListItemProps) => {
+const ProjectEntryListItem = ({
+  projectEntry,
+  deleteProjectEntryAndCleanUpFiles,
+}: ProjectEntryListItemProps) => {
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
-  const [errors, setErrors] = useState<FirebaseError[]>([]);
 
   const handleTrashcanButtonClick = (
     e: React.MouseEvent<HTMLButtonElement>
@@ -28,29 +30,12 @@ const ProjectEntryListItem = ({ projectEntry }: ProjectEntryListItemProps) => {
   };
 
   const handleDeleteButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (projectEntry?.id) {
-      setShowDeleteWarning(false);
-      let errored = false;
-      try {
-        projectEntry.pictureUrls.map((url) => deleteFile(url));
-      } catch (err) {
-        errored = true;
-        setErrors([...errors, err]);
-      }
-      if (errored) {
-        return;
-      }
-      deleteProjectEntry(projectEntry.id).catch((err) => {
-        setErrors([...errors, err]);
-      });
-    }
+    setShowDeleteWarning(false);
+    deleteProjectEntryAndCleanUpFiles(projectEntry);
   };
 
   return (
     <ListGroupItem>
-      <Row>
-        <ErrorAlert errors={errors} />
-      </Row>
       <Row>
         <Col sm="10">
           <Row>

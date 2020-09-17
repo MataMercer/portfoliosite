@@ -5,7 +5,12 @@ import Link from 'next/link';
 import firebase, { FirebaseError } from 'firebase';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import ProjectEntryListItem from './ProjectEntryListItem';
-import { getProjectEntries } from '../../firebase/repositories/ProjectEntryRepository';
+import {
+  getProjectEntries,
+  deleteProjectEntry,
+} from '../../firebase/repositories/ProjectEntryRepository';
+import ErrorAlert from '../ErrorAlert';
+import { deleteFile } from '../../firebase/repositories/StorageRepository';
 
 export default function ProjectEntryList() {
   const [errors, setErrors] = useState<FirebaseError[]>([]);
@@ -25,11 +30,43 @@ export default function ProjectEntryList() {
     }
   }, [errors, status]);
 
+  const deleteProjectEntryAndCleanUpFiles = (projectEntry: IProjectEntry) => {
+    let errored = false;
+    try {
+      projectEntry.pictureUrls.map((url) => deleteFile(url));
+    } catch (err) {
+      errored = true;
+      setErrors([...errors, err]);
+    }
+    if (errored) {
+      return;
+    }
+    deleteProjectEntry(projectEntry.id as string)
+      .then(() => {
+        setProjectEntries(
+          projectEntries.filter(
+            (projectEntryElem) => projectEntryElem.id !== projectEntry.id
+          )
+        );
+      })
+      .catch((err) => {
+        setErrors([...errors, err]);
+      });
+  };
+
   return (
     <div>
+      <Row>
+        <ErrorAlert errors={errors} />
+      </Row>
       <ListGroup>
         {projectEntries.map((projectEntry) => (
-          <ProjectEntryListItem projectEntry={projectEntry} />
+          <ProjectEntryListItem
+            projectEntry={projectEntry}
+            deleteProjectEntryAndCleanUpFiles={
+              deleteProjectEntryAndCleanUpFiles
+            }
+          />
         ))}
       </ListGroup>
     </div>
