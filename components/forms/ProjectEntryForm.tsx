@@ -119,6 +119,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
 
       if (projectEntryId) {
         updateProjectEntry({
+          id: projectEntryId,
           title,
           introDescription,
           description,

@@ -41,13 +41,11 @@ const ProjectEntry = (props: IProjectEntry) => {
       >
         <Row>
           <Col>
-            {pictureUrls?.length > 0 ? (
-              <img
-                className="project-entry-screenshot"
-                src={pictureUrls[0]}
-                alt="project entry screenshot thumbnail"
-              />
-            ) : null}
+            <img
+              className="project-entry-screenshot"
+              src={pictureUrls.length > 0 ? pictureUrls[0] : '/no-image.png'}
+              alt="project entry screenshot thumbnail"
+            />
           </Col>
         </Row>
         <div className="project-entry-text">
@@ -73,7 +71,11 @@ const ProjectEntry = (props: IProjectEntry) => {
       >
         <Row>
           <Col lg="8" className="project-entry-thumbnail-carousel-panel">
-            <ThumbnailCarousel pictureUrls={pictureUrls} />
+            <ThumbnailCarousel
+              pictureUrls={
+                pictureUrls.length > 0 ? pictureUrls : ['/no-image.png']
+              }
+            />
           </Col>
           <Col lg="4" className="project-entry-thumbnail-text-panel">
             <ModalBody>
@@ -82,14 +84,22 @@ const ProjectEntry = (props: IProjectEntry) => {
               <h2>{title}</h2>
               <ul>
                 <li>
-                  <a href={repoLink}>
-                    <FontAwesomeIcon icon={faGithub} /> Repository
-                  </a>
+                  {repoLink ? (
+                    <a href={repoLink}>
+                      <FontAwesomeIcon icon={faGithub} /> Repository
+                    </a>
+                  ) : (
+                    <div>No repository available</div>
+                  )}
                 </li>
                 <li>
-                  <a href={repoLink}>
-                    <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
-                  </a>
+                  {demoLink ? (
+                    <a href={demoLink}>
+                      <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
+                    </a>
+                  ) : (
+                    <div>No demo available</div>
+                  )}
                 </li>
               </ul>
               <ReactMarkdown source={description} />
