@@ -10,6 +10,7 @@ import {
 } from 'reactstrap';
 import Router from 'next/router';
 import { FirebaseError } from 'firebase';
+import { WithContext as ReactTags, Tag } from 'react-tag-input';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
 import UploadInput from '../inputs/UploadInput';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
@@ -34,7 +35,10 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
   const [description, setDescription] = useState<string>('');
   const [repoLink, setRepoLink] = useState<string>('');
   const [demoLink, setDemoLink] = useState<string>('');
-
+  const [completionStatus, setCompletionStatus] = useState<
+    'inProgress' | 'onHold' | 'completed'
+  >('inProgress');
+  const [tags, setTags] = useState<Tag[]>([]);
   const [pictures, setPictures] = useState<File[]>([]);
   const [pictureUrls, setPictureUrls] = useState<string[]>([]);
   const [existingPictureUrls, setExistingPictureUrls] = useState<string[]>([]);
@@ -70,6 +74,14 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
           return null;
         })
       );
+    };
+
+    const convertTagsToObject = () => {
+      const obj: { [name: string]: true } = {};
+      tags.forEach((tag) => {
+        obj[tag.id] = true;
+      });
+      return obj;
     };
 
     const asyncSubmit = async () => {
@@ -125,6 +137,8 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
           description,
           repoLink,
           demoLink,
+          completionStatus,
+          tags: convertTagsToObject(),
           pictureUrls: [...pictureUrls, ...successUploadedPictureUrls],
         })
           .then(() => {
@@ -150,6 +164,8 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
           introDescription,
           repoLink,
           demoLink,
+          completionStatus,
+          tags: convertTagsToObject(),
           pictureUrls: successUploadedPictureUrls,
         })
           .then(() => {
@@ -186,6 +202,13 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
             setRepoLink(projectEntry.repoLink);
             setExistingPictureUrls(projectEntry.pictureUrls);
             setPictureUrls(projectEntry.pictureUrls);
+            setCompletionStatus(projectEntry.completionStatus);
+            setTags(
+              Object.keys(projectEntry.tags).map((tagName) => ({
+                id: tagName,
+                text: tagName,
+              }))
+            );
           } else {
             throw new Error('This project entry does not or no longer exists');
           }
@@ -200,6 +223,12 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
       setStatus('idle');
     }
   }, [errors, projectEntryId, status]);
+
+  const KeyCodes = {
+    comma: 188,
+    enter: 13,
+  };
+  const delimiters = [KeyCodes.comma, KeyCodes.enter];
   return (
     <>
       <Form onSubmit={handleFormSubmit}>
@@ -243,6 +272,47 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setDemoLink(e.target.value)
             }
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label for="completionStatus">Completion Status</Label>
+          <Input
+            type="select"
+            name="completionStatus"
+            id="completionStatus"
+            value={completionStatus}
+            disabled={disabled()}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setCompletionStatus(
+                e.target.value as 'inProgress' | 'onHold' | 'completed'
+              )
+            }
+          >
+            <option value="inProgress">In Progress</option>
+            <option value="onHold">On Hold</option>
+            <option value="completed">Completed</option>
+          </Input>
+        </FormGroup>
+
+        <FormGroup>
+          <Label for="tags">Tags</Label>
+          <ReactTags
+            id="tags"
+            tags={tags}
+            handleAddition={(tag) => {
+              setTags([...tags, tag]);
+            }}
+            handleDelete={(i) => {
+              setTags(tags.filter((tag, index) => index !== i));
+            }}
+            handleDrag={(tag, currPos, newPos) => {
+              const newTags = tags.slice();
+              newTags.splice(currPos, 1);
+              newTags.splice(newPos, 0, tag);
+              setTags(newTags);
+            }}
+            delimiters={delimiters}
           />
         </FormGroup>
         <FormGroup>

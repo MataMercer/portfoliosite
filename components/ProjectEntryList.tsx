@@ -34,6 +34,8 @@ export default function ProjectEntryList() {
                       description={projectEntry.description}
                       repoLink={projectEntry.repoLink}
                       demoLink={projectEntry.demoLink}
+                      completionStatus={projectEntry.completionStatus}
+                      tags={projectEntry.tags}
                       pictureUrls={projectEntry.pictureUrls}
                     />
                   </Col>

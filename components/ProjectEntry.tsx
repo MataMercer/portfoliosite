@@ -9,6 +9,7 @@ import {
   ModalFooter,
   Row,
   Col,
+  Badge,
 } from 'reactstrap';
 import ReactMarkdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,6 +26,8 @@ const ProjectEntry = (props: IProjectEntry) => {
     repoLink,
     demoLink,
     pictureUrls,
+    tags,
+    completionStatus,
   } = props;
 
   const [modal, setModal] = useState(false);
@@ -60,6 +63,15 @@ const ProjectEntry = (props: IProjectEntry) => {
           <Row>
             <Col sm="auto">{introDescription}</Col>
           </Row>
+          {tags ? (
+            <Row>
+              <Col>
+                {Object.keys(tags).map((tag) => (
+                  <Badge color="info">{tag}</Badge>
+                ))}
+              </Col>
+            </Row>
+          ) : null}
         </div>
       </Container>
       <Modal
@@ -82,26 +94,31 @@ const ProjectEntry = (props: IProjectEntry) => {
               <ModalHeader toggle={toggle} />
 
               <h2>{title}</h2>
-              <ul>
-                <li>
-                  {repoLink ? (
-                    <a href={repoLink}>
-                      <FontAwesomeIcon icon={faGithub} /> Repository
-                    </a>
-                  ) : (
-                    <div>No repository available</div>
-                  )}
-                </li>
-                <li>
-                  {demoLink ? (
-                    <a href={demoLink}>
-                      <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
-                    </a>
-                  ) : (
-                    <div>No demo available</div>
-                  )}
-                </li>
-              </ul>
+              {repoLink ? (
+                <Row>
+                  <a href={repoLink}>
+                    <FontAwesomeIcon icon={faGithub} /> Repository
+                  </a>
+                </Row>
+              ) : (
+                <div>No repository available</div>
+              )}
+              {demoLink ? (
+                <Row>
+                  <a href={demoLink}>
+                    <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
+                  </a>
+                </Row>
+              ) : (
+                <div>No demo available</div>
+              )}
+              {tags ? (
+                <Row>
+                  {Object.keys(tags).map((tag) => (
+                    <Badge color="info">{tag}</Badge>
+                  ))}
+                </Row>
+              ) : null}
               <ReactMarkdown source={description} />
             </ModalBody>
           </Col>
