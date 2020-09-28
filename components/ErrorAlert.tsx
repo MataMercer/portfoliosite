@@ -11,6 +11,7 @@ const ErrorAlert = ({ errors }: ErrorAlertProps) => {
     <>
       {errors.length > 0
         ? errors.map((err, index) => (
+            // eslint-disable-next-line react/no-array-index-key
             <Alert key={index} color="danger">
               {err.message}
             </Alert>

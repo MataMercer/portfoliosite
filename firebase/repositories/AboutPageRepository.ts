@@ -1,7 +1,7 @@
-import firebase from 'firebase';
+import { db } from '../config';
 
 async function getAboutPage() {
-  const aboutPageRef = firebase.firestore().collection('pages').doc('about');
+  const aboutPageRef = db.collection('pages').doc('about');
   return aboutPageRef?.get().then((doc) => {
     if (doc.exists) {
       return doc?.data()?.content;
@@ -11,7 +11,7 @@ async function getAboutPage() {
 }
 
 async function updateAboutPage(content: string) {
-  const aboutPageRef = firebase.firestore().collection('pages').doc('about');
+  const aboutPageRef = db.collection('pages').doc('about');
   return aboutPageRef?.set({
     content,
   });

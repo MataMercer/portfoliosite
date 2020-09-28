@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import Router from 'next/router';
 // eslint-disable-next-line no-unused-vars
 import firebase, { FirebaseError } from 'firebase/app';
-import { useFirebase } from '../firebase/FirebaseContext';
+import { auth } from '../firebase/config';
 
 type AuthContextProps = {
   login: (email: string, password: string) => Promise<any>;
@@ -21,7 +21,6 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<firebase.User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { auth } = useFirebase();
   useEffect(() => {
     async function loadUser() {
       // observer to check if the user is logged in
