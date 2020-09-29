@@ -2,6 +2,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import 'firebase/firestore';
 import 'firebase/auth';
+
 const firebaseConfig =
   process.env.NODE_ENV === 'development'
     ? {

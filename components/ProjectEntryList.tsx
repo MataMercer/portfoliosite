@@ -1,24 +1,37 @@
 import { Row, Col } from 'reactstrap';
 import { FirebaseError } from 'firebase';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { IProjectEntry } from '../ModelTypes/interfaces';
 import ProjectEntry from './ProjectEntry';
 import { getProjectEntries } from '../firebase/repositories/ProjectEntryRepository';
+import ErrorAlert from './ErrorAlert';
 
 export default function ProjectEntryList() {
-  const [errors, setErrors] = useState<FirebaseError>();
+  const [errors, setErrors] = useState<FirebaseError[]>([]);
   const [projectEntries, setProjectEntries] = useState<IProjectEntry[]>([]);
   const projectEntriesPerRow = 3;
-  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('loading');
+
   useEffect(() => {
-    getProjectEntries().then((res) => {
-      setProjectEntries(res);
-    });
-  }, []);
+    if (status === 'loading') {
+      getProjectEntries()
+        .then((res) => {
+          setProjectEntries(res);
+          setStatus('idle');
+        })
+        .catch((err) => {
+          setStatus('error');
+          setErrors([...errors, err]);
+        });
+    }
+  }, [errors, status]);
 
   return (
     <div>
+      <Row>
+        <ErrorAlert errors={errors} />
+      </Row>
       {projectEntries.map((projectEntryRow, index) => {
         if (index % projectEntriesPerRow === 0) {
           return (

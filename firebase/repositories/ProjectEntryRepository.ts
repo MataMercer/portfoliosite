@@ -4,22 +4,17 @@ import { db, storage } from '../config';
 const getProjectEntry = async (projectEntryId: string) => {
   const doc = await db.collection('projectentries').doc(projectEntryId).get();
   if (doc.exists && doc) {
-    const projectEntry = doc.data() as IProjectEntry;
-    projectEntry.id = doc.id;
-    return projectEntry;
+    return { ...doc.data(), id: doc.id } as IProjectEntry;
   }
   return null;
 };
 const getProjectEntries = async () => {
-  const querySnapshot = await db.collection('projectentries').get();
-  let tempProjectEntries: IProjectEntry[] = [];
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    const projectEntry = doc.data() as IProjectEntry;
-    projectEntry.id = doc.id;
-    tempProjectEntries = [...tempProjectEntries, projectEntry];
+  const querySnapshot = (
+    await db.collection('projectentries').get({ source: 'server' })
+  ).docs;
+  return querySnapshot.map((doc) => {
+    return { ...doc.data(), id: doc.id } as IProjectEntry;
   });
-  return tempProjectEntries;
 };
 
 const createProjectEntry = (projectEntryData: IProjectEntry) => {

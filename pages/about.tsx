@@ -28,9 +28,8 @@ export default function About() {
   return (
     <div>
       <Layout title="About">
-        <ErrorAlert errors={errors} />
-
         <h1>About</h1>
+        <ErrorAlert errors={errors} />
         {status === 'loading' ? (
           <>
             <Skeleton count={6} />

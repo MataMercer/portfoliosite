@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Alert, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Alert } from 'reactstrap';
 import { FirebaseError } from 'firebase';
 
 type ErrorAlertProps = {
