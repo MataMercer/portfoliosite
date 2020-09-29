@@ -29,9 +29,11 @@ export default function About() {
     <div>
       <Layout title="About">
         <ErrorAlert errors={errors} />
+
+        <h1>About</h1>
         {status === 'loading' ? (
           <>
-            <Skeleton /> <Skeleton count={5} />
+            <Skeleton count={6} />
           </>
         ) : (
           <ReactMarkdown source={content} />

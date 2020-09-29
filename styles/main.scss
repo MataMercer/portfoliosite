@@ -106,10 +106,10 @@ header {
   vertical-align: middle;
   li {
     display: inline-block;
-    padding: 0px 20px;
     border-radius: 3em;
     margin-right: 1em;
     a {
+      padding: 0px 20px;
       transition: all 0.3s ease 0s;
     }
   }
@@ -132,6 +132,7 @@ header {
 }
 
 .navbar-brand {
+  cursor: pointer;
   margin-right: auto;
   padding-right: 1em;
   padding-top: 0px;
@@ -165,6 +166,7 @@ article {
 }
 
 .project-entry {
+  cursor: pointer;
   margin-top: 1em;
   margin-bottom: 1em;
   background-color: darken($color: $page-color, $amount: 4);
@@ -267,4 +269,66 @@ footer {
   height: 5px;
   background: var(--primary);
   margin-top: 20px;
+}
+
+// TAGS
+
+div.ReactTags__tags {
+  position: relative;
+}
+
+/* Styles for the input */
+div.ReactTags__tagInput {
+  width: 200px;
+  border-radius: 2px;
+  display: inline-block;
+}
+div.ReactTags__tagInput input.ReactTags__tagInputField,
+div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
+  height: 31px;
+  margin: 0;
+  width: 100%;
+  border: 1px solid #eee;
+  padding: 0 4px;
+}
+
+/* Styles for selected tags */
+div.ReactTags__selected span.ReactTags__tag {
+  border: 1px solid #ddd;
+  background: #eee;
+  display: inline-block;
+  padding: 5px;
+  margin: 0 5px;
+  cursor: move;
+  border-radius: 2px;
+}
+div.ReactTags__selected a.ReactTags__remove {
+  color: #aaa;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+/* Styles for suggestions */
+div.ReactTags__suggestions {
+  position: absolute;
+}
+div.ReactTags__suggestions ul {
+  list-style-type: none;
+  box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
+  background: white;
+  width: 200px;
+}
+div.ReactTags__suggestions li {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 10px;
+  margin: 0;
+}
+div.ReactTags__suggestions li mark {
+  text-decoration: underline;
+  background: none;
+  font-weight: 600;
+}
+div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
+  background: #b7cfe0;
+  cursor: pointer;
 }

@@ -1,13 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import {
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  Spinner,
-  Alert,
-} from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import Router from 'next/router';
 import { FirebaseError } from 'firebase';
 import { WithContext as ReactTags, Tag } from 'react-tag-input';
@@ -24,6 +16,7 @@ import {
   uploadFile,
 } from '../../firebase/repositories/StorageRepository';
 import ErrorAlert from '../ErrorAlert';
+import { getAllTags } from '../../firebase/repositories/TagRepository';
 
 type ProjectEntryFormProps = {
   projectEntryId: string;
@@ -39,6 +32,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
     'inProgress' | 'onHold' | 'completed'
   >('inProgress');
   const [tags, setTags] = useState<Tag[]>([]);
+  const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
   const [pictures, setPictures] = useState<File[]>([]);
   const [pictureUrls, setPictureUrls] = useState<string[]>([]);
   const [existingPictureUrls, setExistingPictureUrls] = useState<string[]>([]);
@@ -191,36 +185,53 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
   };
 
   useEffect(() => {
-    if (projectEntryId && status === 'loading') {
-      getProjectEntry(projectEntryId)
-        .then((projectEntry) => {
-          if (projectEntry) {
-            setTitle(projectEntry.title);
-            setIntroDescription(projectEntry.introDescription);
-            setDescription(projectEntry.description);
-            setDemoLink(projectEntry.demoLink);
-            setRepoLink(projectEntry.repoLink);
-            setExistingPictureUrls(projectEntry.pictureUrls);
-            setPictureUrls(projectEntry.pictureUrls);
-            setCompletionStatus(projectEntry.completionStatus);
-            setTags(
-              Object.keys(projectEntry.tags).map((tagName) => ({
-                id: tagName,
-                text: tagName,
-              }))
-            );
-          } else {
-            throw new Error('This project entry does not or no longer exists');
-          }
-        })
-        .catch((err) => {
-          setErrors([...errors, err]);
-        })
-        .finally(() => {
+    const loadProjectEntry = async () => {
+      try {
+        const projectEntry = await getProjectEntry(projectEntryId);
+        if (projectEntry) {
+          setTitle(projectEntry.title);
+          setIntroDescription(projectEntry.introDescription);
+          setDescription(projectEntry.description);
+          setDemoLink(projectEntry.demoLink);
+          setRepoLink(projectEntry.repoLink);
+          setExistingPictureUrls(projectEntry.pictureUrls);
+          setPictureUrls(projectEntry.pictureUrls);
+          setCompletionStatus(projectEntry.completionStatus);
+          setTags(
+            Object.keys(projectEntry.tags).map((tagName) => ({
+              id: tagName,
+              text: tagName,
+            }))
+          );
+        } else {
+          throw new Error('This project entry does not or no longer exists');
+        }
+      } catch (err) {
+        setStatus('error');
+        setErrors([...errors, err]);
+      }
+    };
+    const loadTagSuggestions = async () => {
+      try {
+        const allTags = await getAllTags();
+
+        setTagSuggestions(allTags.map((tag) => ({ id: tag, text: tag })));
+      } catch (err) {
+        setStatus('error');
+        setErrors([...errors, err]);
+      }
+    };
+
+    if (status === 'loading') {
+      if (projectEntryId) {
+        Promise.all([loadProjectEntry(), loadTagSuggestions()]).then(() => {
           setStatus('idle');
         });
-    } else if (status === 'loading') {
-      setStatus('idle');
+      } else {
+        loadTagSuggestions().then(() => {
+          setStatus('idle');
+        });
+      }
     }
   }, [errors, projectEntryId, status]);
 
@@ -297,24 +308,31 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
 
         <FormGroup>
           <Label for="tags">Tags</Label>
-          <ReactTags
-            id="tags"
-            tags={tags}
-            handleAddition={(tag) => {
-              setTags([...tags, tag]);
-            }}
-            handleDelete={(i) => {
-              setTags(tags.filter((tag, index) => index !== i));
-            }}
-            handleDrag={(tag, currPos, newPos) => {
-              const newTags = tags.slice();
-              newTags.splice(currPos, 1);
-              newTags.splice(newPos, 0, tag);
-              setTags(newTags);
-            }}
-            delimiters={delimiters}
-          />
+
+          {!disabled() ? (
+            <ReactTags
+              id="tags"
+              tags={tags}
+              handleAddition={(tag) => {
+                setTags([...tags, tag]);
+              }}
+              handleDelete={(i) => {
+                setTags(tags.filter((tag, index) => index !== i));
+              }}
+              handleDrag={(tag, currPos, newPos) => {
+                const newTags = tags.slice();
+                newTags.splice(currPos, 1);
+                newTags.splice(newPos, 0, tag);
+                setTags(newTags);
+              }}
+              delimiters={delimiters}
+              suggestions={tagSuggestions}
+            />
+          ) : (
+            <Spinner />
+          )}
         </FormGroup>
+
         <FormGroup>
           <Label for="introDescription">Intro Description</Label>
           <Input
