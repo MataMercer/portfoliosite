@@ -62,6 +62,7 @@ export default function ProjectEntryList() {
       <ListGroup>
         {projectEntries.map((projectEntry) => (
           <ProjectEntryListItem
+            key={projectEntry.id}
             projectEntry={projectEntry}
             deleteProjectEntryAndCleanUpFiles={
               deleteProjectEntryAndCleanUpFiles

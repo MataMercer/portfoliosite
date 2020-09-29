@@ -67,7 +67,9 @@ const ProjectEntry = (props: IProjectEntry) => {
             <Row>
               <Col>
                 {Object.keys(tags).map((tag) => (
-                  <Badge color="info">{tag}</Badge>
+                  <Badge key={tag} color="info">
+                    {tag}
+                  </Badge>
                 ))}
               </Col>
             </Row>
@@ -115,7 +117,9 @@ const ProjectEntry = (props: IProjectEntry) => {
               {tags ? (
                 <Row>
                   {Object.keys(tags).map((tag) => (
-                    <Badge color="info">{tag}</Badge>
+                    <Badge key={tag} color="info">
+                      {tag}
+                    </Badge>
                   ))}
                 </Row>
               ) : null}

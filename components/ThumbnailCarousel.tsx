@@ -59,6 +59,8 @@ const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
         </Button>
         {pictureUrls.map((pictureUrl, i) => (
           <button
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
             className={`thumbnail-carousel-nav-item ${
               i === index ? 'thumbnail-carousel-nav-item-active' : ''
             }`}

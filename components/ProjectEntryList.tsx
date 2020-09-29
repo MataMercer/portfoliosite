@@ -9,7 +9,7 @@ import { getProjectEntries } from '../firebase/repositories/ProjectEntryReposito
 export default function ProjectEntryList() {
   const [errors, setErrors] = useState<FirebaseError>();
   const [projectEntries, setProjectEntries] = useState<IProjectEntry[]>([]);
-  const projectEntriesPerRow = 2;
+  const projectEntriesPerRow = 3;
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     getProjectEntries().then((res) => {
@@ -22,12 +22,14 @@ export default function ProjectEntryList() {
       {projectEntries.map((projectEntryRow, index) => {
         if (index % projectEntriesPerRow === 0) {
           return (
-            <Row>
+            // eslint-disable-next-line react/no-array-index-key
+            <Row key={index}>
               {projectEntries
                 .slice(index, index + projectEntriesPerRow)
                 .map((projectEntry: IProjectEntry) => (
-                  <Col sm="6">
+                  <Col sm="4" key={projectEntry.id}>
                     <ProjectEntry
+                      key={projectEntry.id}
                       id={projectEntry.id}
                       title={projectEntry.title}
                       introDescription={projectEntry.introDescription}
