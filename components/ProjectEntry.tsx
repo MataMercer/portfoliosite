@@ -32,7 +32,25 @@ const ProjectEntry = (props: IProjectEntry) => {
 
   const [modal, setModal] = useState(false);
 
-  const toggle = () => setModal(!modal);
+  const toggle = () => {
+    setModal(!modal);
+  };
+
+  const CompletionStatusBadge = () => {
+    switch (completionStatus) {
+      case 'inProgress':
+        return <Badge color="warning">In Progress</Badge>;
+      case 'completed':
+        return <Badge color="success">Completed</Badge>;
+      case 'onHold':
+        return <Badge color="secondary">On Hold</Badge>;
+      default:
+        return <></>;
+    }
+  };
+  document?.querySelector('a')?.addEventListener('click', function (e) {
+    e.stopPropagation();
+  });
 
   return (
     <div>
@@ -58,6 +76,20 @@ const ProjectEntry = (props: IProjectEntry) => {
                 <strong>{title}</strong>
               </h4>
             </Col>
+            <Col>
+              {demoLink ? (
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href={demoLink}
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
+                </a>
+              ) : null}
+            </Col>
           </Row>
 
           <Row>
@@ -66,6 +98,7 @@ const ProjectEntry = (props: IProjectEntry) => {
           {tags ? (
             <Row>
               <Col>
+                <CompletionStatusBadge />
                 {Object.keys(tags).map((tag) => (
                   <Badge key={tag} color="info">
                     {tag}
@@ -98,7 +131,7 @@ const ProjectEntry = (props: IProjectEntry) => {
               <h2>{title}</h2>
               {repoLink ? (
                 <Row>
-                  <a href={repoLink}>
+                  <a target="_blank" rel="noreferrer" href={repoLink}>
                     <FontAwesomeIcon icon={faGithub} /> Repository
                   </a>
                 </Row>
@@ -107,7 +140,7 @@ const ProjectEntry = (props: IProjectEntry) => {
               )}
               {demoLink ? (
                 <Row>
-                  <a href={demoLink}>
+                  <a target="_blank" rel="noreferrer" href={demoLink}>
                     <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
                   </a>
                 </Row>
@@ -116,6 +149,7 @@ const ProjectEntry = (props: IProjectEntry) => {
               )}
               {tags ? (
                 <Row>
+                  <CompletionStatusBadge />
                   {Object.keys(tags).map((tag) => (
                     <Badge key={tag} color="info">
                       {tag}

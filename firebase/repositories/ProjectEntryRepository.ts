@@ -29,6 +29,7 @@ const createProjectEntry = (projectEntryData: IProjectEntry) => {
     repoLink: projectEntryData.repoLink,
     demoLink: projectEntryData.demoLink,
     tags: projectEntryData.tags,
+    completionStatus: projectEntryData.completionStatus,
     pictureUrls: projectEntryData.pictureUrls,
   });
 
@@ -78,6 +79,7 @@ const updateProjectEntry = async (projectEntryData: IProjectEntry) => {
       repoLink: projectEntryData.repoLink,
       demoLink: projectEntryData.demoLink,
       tags: projectEntryData.tags,
+      completionStatus: projectEntryData.completionStatus,
       pictureUrls: projectEntryData.pictureUrls,
     });
 
