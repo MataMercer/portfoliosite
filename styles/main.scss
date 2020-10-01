@@ -164,9 +164,11 @@ article {
 .project-entry-screenshot {
   width: 100%;
 }
-
+.project-entry-anchor:hover {
+  text-decoration: none;
+}
 .project-entry {
-  cursor: pointer;
+  color: black;
   margin-top: 1em;
   margin-bottom: 1em;
   background-color: darken($color: $page-color, $amount: 4);

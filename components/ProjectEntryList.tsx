@@ -46,24 +46,25 @@ export default function ProjectEntryList() {
                 .slice(index, index + projectEntriesPerRow)
                 .map((projectEntry: IProjectEntry) => (
                   <Col sm="4" key={projectEntry.id}>
-                    <ProjectEntryThumbnail
-                      key={projectEntry.id}
-                      id={projectEntry.id}
-                      title={projectEntry.title}
-                      introDescription={projectEntry.introDescription}
-                      description={projectEntry.description}
-                      repoLink={projectEntry.repoLink}
-                      demoLink={projectEntry.demoLink}
-                      completionStatus={projectEntry.completionStatus}
-                      tags={projectEntry.tags}
-                      pictureUrls={projectEntry.pictureUrls}
-                      onClick={() => {
-                        router.push(
-                          `/?projectentryid=${projectEntry.id}`,
-                          `/projectentry/${projectEntry.id}`
-                        );
-                      }}
-                    />
+                    <Link
+                      href={`/?projectentryid=${projectEntry.id}`}
+                      as={`/projectentry/${projectEntry.id}`}
+                    >
+                      <a className="project-entry-anchor">
+                        <ProjectEntryThumbnail
+                          key={projectEntry.id}
+                          id={projectEntry.id}
+                          title={projectEntry.title}
+                          introDescription={projectEntry.introDescription}
+                          description={projectEntry.description}
+                          repoLink={projectEntry.repoLink}
+                          demoLink={projectEntry.demoLink}
+                          completionStatus={projectEntry.completionStatus}
+                          tags={projectEntry.tags}
+                          pictureUrls={projectEntry.pictureUrls}
+                        />
+                      </a>
+                    </Link>
                     <ProjectEntry projectEntry={projectEntry} />
                   </Col>
                 ))}

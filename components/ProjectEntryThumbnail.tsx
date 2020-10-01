@@ -16,9 +16,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { IProjectEntry } from '../ModelTypes/interfaces';
 import CompletionStatusBadge from './CompletionStatusBadge';
 
-const ProjectEntryThumbnail = (
-  props: IProjectEntry & { onClick: () => void }
-) => {
+const ProjectEntryThumbnail = (props: IProjectEntry) => {
   const {
     title,
     introDescription,
@@ -26,18 +24,12 @@ const ProjectEntryThumbnail = (
     pictureUrls,
     tags,
     completionStatus,
-    onClick,
   } = props;
   document?.querySelector('a')?.addEventListener('click', function (e) {
     e.stopPropagation();
   });
   return (
-    <Container
-      onClick={onClick}
-      className="project-entry"
-      color="primary"
-      fluid="xs"
-    >
+    <Container className="project-entry" color="primary" fluid="xs">
       <Row>
         <Col>
           <img
@@ -49,24 +41,10 @@ const ProjectEntryThumbnail = (
       </Row>
       <div className="project-entry-text">
         <Row>
-          <Col sm="auto">
+          <Col sm="6">
             <h4>
               <strong>{title}</strong>
             </h4>
-          </Col>
-          <Col>
-            {demoLink ? (
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href={demoLink}
-                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  e.stopPropagation();
-                }}
-              >
-                <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
-              </a>
-            ) : null}
           </Col>
         </Row>
 
