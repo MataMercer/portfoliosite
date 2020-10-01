@@ -1,8 +1,8 @@
-import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
-import { useState, useEffect, useCallback } from 'react';
+import { Row, ListGroup } from 'reactstrap';
+import { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import Link from 'next/link';
-import firebase, { FirebaseError } from 'firebase';
+import { FirebaseError } from 'firebase';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import ProjectEntryListItem from './ProjectEntryListItem';
 import {

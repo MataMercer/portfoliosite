@@ -41,11 +41,17 @@ const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
 
   return (
     <>
-      <img
-        className="project-entry-screenshot"
-        src={pictureUrls[index]}
-        alt="Screenshot of app"
-      />
+      {pictureUrls.map((pictureUrl, i) => (
+        <img
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          className="project-entry-screenshot"
+          src={pictureUrl}
+          alt="Screenshot of app"
+          hidden={i !== index}
+        />
+      ))}
+
       <Row className="thumbnail-carousel-nav">
         <Button
           value="left"

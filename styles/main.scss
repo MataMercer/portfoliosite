@@ -192,10 +192,9 @@ article {
 .project-entry-modal {
   padding: 0;
   border: none;
-  font-size: medium;
+  font-size: 0.75em;
   ul {
-    list-style: none;
-    padding-left: 0px;
+    margin-left: 0em;
   }
 
   .modal-body {
@@ -214,7 +213,16 @@ article {
   padding: 0;
 }
 
+.project-entry-description {
+  margin-top: 1em;
+}
+
+.thumbnail-carousel {
+  display: flex;
+}
+
 .thumbnail-carousel-nav {
+  align-self: flex-end;
   padding: 0.5em;
   .btn {
     border-radius: 0;
