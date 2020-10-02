@@ -45,27 +45,19 @@ export default function ProjectEntryList() {
                 .slice(index, index + projectEntriesPerRow)
                 .map((projectEntry: IProjectEntry) => (
                   <Col md="4" key={projectEntry.id}>
-                    <Link
-                      scroll={false}
-                      href={`/?projectentryid=${projectEntry.id}`}
-                      as={`/projectentry/${projectEntry.id}`}
-                    >
-                      <a className="project-entry-anchor">
-                        <ProjectEntryThumbnail
-                          key={projectEntry.id}
-                          id={projectEntry.id}
-                          title={projectEntry.title}
-                          introDescription={projectEntry.introDescription}
-                          description={projectEntry.description}
-                          repoLink={projectEntry.repoLink}
-                          demoLink={projectEntry.demoLink}
-                          completionStatus={projectEntry.completionStatus}
-                          tags={projectEntry.tags}
-                          pictureUrls={projectEntry.pictureUrls}
-                          updatedAt={projectEntry.updatedAt}
-                        />
-                      </a>
-                    </Link>
+                    <ProjectEntryThumbnail
+                      key={projectEntry.id}
+                      id={projectEntry.id}
+                      title={projectEntry.title}
+                      introDescription={projectEntry.introDescription}
+                      description={projectEntry.description}
+                      repoLink={projectEntry.repoLink}
+                      demoLink={projectEntry.demoLink}
+                      completionStatus={projectEntry.completionStatus}
+                      tags={projectEntry.tags}
+                      pictureUrls={projectEntry.pictureUrls}
+                      updatedAt={projectEntry.updatedAt}
+                    />
                     <ProjectEntry projectEntry={projectEntry} />
                   </Col>
                 ))}
