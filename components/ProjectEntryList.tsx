@@ -1,4 +1,4 @@
-import { Row, Col, Modal } from 'reactstrap';
+import { Row, Col, Modal, Container } from 'reactstrap';
 import { FirebaseError } from 'firebase';
 import { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
@@ -32,7 +32,7 @@ export default function ProjectEntryList() {
   }, [errors, status]);
 
   return (
-    <div>
+    <Container>
       <Row>
         <ErrorAlert errors={errors} />
       </Row>
@@ -45,8 +45,9 @@ export default function ProjectEntryList() {
               {projectEntries
                 .slice(index, index + projectEntriesPerRow)
                 .map((projectEntry: IProjectEntry) => (
-                  <Col sm="4" key={projectEntry.id}>
+                  <Col md="4" key={projectEntry.id}>
                     <Link
+                      scroll={false}
                       href={`/?projectentryid=${projectEntry.id}`}
                       as={`/projectentry/${projectEntry.id}`}
                     >
@@ -73,6 +74,6 @@ export default function ProjectEntryList() {
         }
         return null;
       })}
-    </div>
+    </Container>
   );
 }

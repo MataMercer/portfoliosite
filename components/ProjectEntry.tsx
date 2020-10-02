@@ -77,67 +77,76 @@ const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
     }
   }, [errors, projectEntry, projectEntryId, status]);
 
-  const ProjectEntryContent = () => {
-    return (
-      <>
-        <Row>
-          <Col lg="8" className="project-entry-thumbnail-carousel-panel">
-            <ThumbnailCarousel
-              pictureUrls={
-                pictureUrls.length > 0 ? pictureUrls : ['/no-image.png']
-              }
-            />
-          </Col>
-          <Col lg="4" className="project-entry-thumbnail-text-panel">
-            <ModalBody>
-              <ModalHeader
-                toggle={() => {
-                  router.push('/');
-                }}
-              />
+  const Carousel = () => (
+    <ThumbnailCarousel
+      pictureUrls={pictureUrls.length > 0 ? pictureUrls : ['/no-image.png']}
+    />
+  );
 
-              <h2>{title}</h2>
-              {repoLink ? (
-                <Row>
-                  <a target="_blank" rel="noreferrer" href={repoLink}>
-                    <FontAwesomeIcon icon={faGithub} /> Repository
-                  </a>
-                </Row>
-              ) : (
-                <div>No repository available</div>
-              )}
-              {demoLink ? (
-                <Row>
-                  <a target="_blank" rel="noreferrer" href={demoLink}>
-                    <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
-                  </a>
-                </Row>
-              ) : (
-                <div>No demo available</div>
-              )}
-              {tags ? (
-                <Row>
-                  <CompletionStatusBadge completionStatus={completionStatus} />
-                  {Object.keys(tags).map((tag) => (
-                    <Badge key={tag} color="info">
-                      {tag}
-                    </Badge>
-                  ))}
-                </Row>
-              ) : null}
-              <ReactMarkdown
-                className="project-entry-description"
-                source={description}
-              />
-            </ModalBody>
-          </Col>
+  const Text = () => (
+    <>
+      <Row>
+        <h2>{title}</h2>
+      </Row>
+      {repoLink ? (
+        <Row>
+          <a target="_blank" rel="noreferrer" href={repoLink}>
+            <FontAwesomeIcon icon={faGithub} /> Repository
+          </a>
         </Row>
-      </>
-    );
-  };
+      ) : (
+        <Row>
+          <div>No repository available</div>
+        </Row>
+      )}
+      {demoLink ? (
+        <Row>
+          <a target="_blank" rel="noreferrer" href={demoLink}>
+            <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
+          </a>
+        </Row>
+      ) : (
+        <Row>
+          <div>No demo available</div>
+        </Row>
+      )}
+      {tags ? (
+        <Row>
+          <CompletionStatusBadge completionStatus={completionStatus} />
+          {Object.keys(tags).map((tag) => (
+            <Badge key={tag} color="info">
+              {tag}
+            </Badge>
+          ))}
+        </Row>
+      ) : null}
+      <Row>
+        <ReactMarkdown
+          className="project-entry-description"
+          source={description}
+        />
+      </Row>
+    </>
+  );
 
   return projectEntryId ? (
-    <ProjectEntryContent />
+    <Row>
+      <Col lg="8" className="project-entry-thumbnail-carousel-panel-no-modal">
+        <Container>
+          <Carousel />
+        </Container>
+      </Col>
+      <Col lg="4" className="project-entry-thumbnail-text-panel-no-modal">
+        <ModalHeader
+          toggle={() => {
+            router.push('/');
+          }}
+        />
+        <Container>
+          <Text />
+        </Container>
+      </Col>
+    </Row>
   ) : (
     <Modal
       contentClassName="project-entry-modal"
@@ -146,7 +155,21 @@ const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
       toggle={() => router.push('/')}
       isOpen={router.query.projectentryid === projectEntry?.id}
     >
-      <ProjectEntryContent />
+      <Row>
+        <Col lg="8" className="project-entry-thumbnail-carousel-panel-modal">
+          <Carousel />
+        </Col>
+        <Col lg="4" className="project-entry-thumbnail-text-panel-modal">
+          <ModalBody>
+            <ModalHeader
+              toggle={() => {
+                router.push('/');
+              }}
+            />
+            <Text />
+          </ModalBody>
+        </Col>
+      </Row>
     </Modal>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Row, Col } from 'reactstrap';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Container } from 'next/app';
 
 type ThumbnailCarouselProps = {
   pictureUrls: string[];
@@ -40,17 +41,19 @@ const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
   });
 
   return (
-    <>
-      {pictureUrls.map((pictureUrl, i) => (
-        <img
-          // eslint-disable-next-line react/no-array-index-key
-          key={i}
-          className="project-entry-screenshot"
-          src={pictureUrl}
-          alt="Screenshot of app"
-          hidden={i !== index}
-        />
-      ))}
+    <Container>
+      <Row>
+        {pictureUrls.map((pictureUrl, i) => (
+          <img
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
+            className="project-entry-screenshot"
+            src={pictureUrl}
+            alt="Screenshot of app"
+            hidden={i !== index}
+          />
+        ))}
+      </Row>
 
       <Row className="thumbnail-carousel-nav">
         <Button
@@ -89,7 +92,7 @@ const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
           />
         </Button>
       </Row>
-    </>
+    </Container>
   );
 };
 

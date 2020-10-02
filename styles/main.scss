@@ -3,17 +3,28 @@
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import './BootstrapCustomStyling.scss';
 @import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Recursive:wght@600&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Recursive:wght@600&display=swap');
 
 $page-color: #fafafa;
 $black-color: #272727;
+
+@font-face {
+  font-family: 'Recursive';
+  src: url('../public/Recursive-SemiBold-CASL=0-CRSV=0-MONO=0-slnt=0.ttf')
+    format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('../public/OpenSans-Regular.ttf') format('truetype');
+}
+
 body {
   font-family: 'Open Sans', 'SF Pro Icons', 'Helvetica', 'Arial', sans-serif;
   font-size: larger;
   // padding: 20px 20px 60px;
   // max-width: 680px;
   // margin: 0 auto;
-  background-color: $page-color;
 }
 
 h1,
@@ -65,7 +76,7 @@ hr {
 }
 
 .navbar-brand-text {
-  font-family: 'Recursive', 'SF Pro Text', 'SF Pro Icons', 'Helvetica', 'Arial',
+  font-family: 'Recursive', 'Noto serif', 'SF Pro Icons', 'Helvetica', 'Arial',
     sans-serif;
   vertical-align: middle;
   font-size: 1.5em;
@@ -206,12 +217,17 @@ article {
     margin: 0;
   }
 }
-.project-entry-thumbnail-carousel-panel {
+.project-entry-thumbnail-carousel-panel-modal {
   background-color: #1e1e24;
   padding: 0;
 }
 
-.project-entry-thumbnail-text-panel {
+.project-entry-thumbnail-carousel-panel-no-modal {
+  background-color: #1e1e24;
+  padding: 0;
+}
+
+.project-entry-thumbnail-text-panel-modal {
   padding: 0;
 }
 
@@ -230,11 +246,12 @@ article {
     border-radius: 0;
     border: none;
     font-size: x-large;
+    height: 5em;
   }
 }
 
 .thumbnail-carousel-nav-item {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: #1e1e24;
   border: none;
   padding: 0;
   img {
@@ -247,9 +264,8 @@ article {
   img {
     filter: brightness(100%);
   }
-  border-style: solid;
-  border-color: $primary;
-  border-width: 0.3em;
+  outline: 0.3em solid $primary;
+  outline-offset: -0.3em;
 }
 
 .article-nav-container {
