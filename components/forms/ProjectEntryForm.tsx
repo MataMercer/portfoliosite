@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import Router from 'next/router';
 import { FirebaseError } from 'firebase';
+
 import { WithContext as ReactTags, Tag } from 'react-tag-input';
+import { timestamp } from '../../firebase/config';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
 import UploadInput from '../inputs/UploadInput';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
@@ -134,6 +136,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
           completionStatus,
           tags: convertTagsToObject(),
           pictureUrls: [...pictureUrls, ...successUploadedPictureUrls],
+          updatedAt: timestamp() as firebase.firestore.Timestamp,
         })
           .then(() => {
             Router.push('/admindashboard');
@@ -161,6 +164,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
           completionStatus,
           tags: convertTagsToObject(),
           pictureUrls: successUploadedPictureUrls,
+          updatedAt: timestamp() as firebase.firestore.Timestamp,
         })
           .then(() => {
             Router.push('/admindashboard');

@@ -41,6 +41,7 @@ const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
   const [status, setStatus] = useState<
     'idle' | 'loading' | 'submitting' | 'error'
   >('loading');
+  const [updatedAt, setUpdatedAt] = useState<firebase.firestore.Timestamp>();
   const [errors, setErrors] = useState<FirebaseError[]>([]);
 
   const router = useRouter();
@@ -58,6 +59,7 @@ const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
               setPictureUrls(fetchedProjectEntry.pictureUrls);
               setCompletionStatus(fetchedProjectEntry.completionStatus);
               setTags(fetchedProjectEntry.tags);
+              setUpdatedAt(fetchedProjectEntry.updatedAt);
             }
           })
           .catch((err) => {
@@ -73,6 +75,7 @@ const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
         setPictureUrls(projectEntry.pictureUrls);
         setCompletionStatus(projectEntry.completionStatus);
         setTags(projectEntry.tags);
+        setUpdatedAt(projectEntry.updatedAt);
       }
     }
   }, [errors, projectEntry, projectEntryId, status]);
@@ -125,6 +128,13 @@ const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
           className="project-entry-description"
           source={description}
         />
+      </Row>
+      <Row>
+        <i>
+          {updatedAt
+            ? `Last updated on ${updatedAt.toDate().toDateString()}`
+            : ''}
+        </i>
       </Row>
     </>
   );

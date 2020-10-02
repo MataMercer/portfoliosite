@@ -64,6 +64,7 @@ function AdminDashboard() {
               <Row>
                 <Col sm="12">
                   <Card body>
+                    <CardTitle>Manage Project Entries</CardTitle>
                     <Link href="/projectentryformpage">
                       <a>
                         <Button>Add New Project Entry</Button>

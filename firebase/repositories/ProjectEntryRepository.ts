@@ -1,5 +1,5 @@
 import { IProjectEntry } from '../../ModelTypes/interfaces';
-import { db, storage } from '../config';
+import { db } from '../config';
 
 const getProjectEntry = async (projectEntryId: string) => {
   const doc = await db.collection('projectentries').doc(projectEntryId).get();
@@ -10,7 +10,10 @@ const getProjectEntry = async (projectEntryId: string) => {
 };
 const getProjectEntries = async () => {
   const querySnapshot = (
-    await db.collection('projectentries').get({ source: 'server' })
+    await db
+      .collection('projectentries')
+      .orderBy('updatedAt', 'desc')
+      .get({ source: 'server' })
   ).docs;
   return querySnapshot.map((doc) => {
     return { ...doc.data(), id: doc.id } as IProjectEntry;
@@ -31,6 +34,7 @@ const createProjectEntry = (projectEntryData: IProjectEntry) => {
     tags: projectEntryData.tags,
     completionStatus: projectEntryData.completionStatus,
     pictureUrls: projectEntryData.pictureUrls,
+    updatedAt: projectEntryData.updatedAt,
   });
 
   Object.keys(projectEntryData.tags).forEach((tag) => {
@@ -81,6 +85,7 @@ const updateProjectEntry = async (projectEntryData: IProjectEntry) => {
       tags: projectEntryData.tags,
       completionStatus: projectEntryData.completionStatus,
       pictureUrls: projectEntryData.pictureUrls,
+      updatedAt: projectEntryData.updatedAt,
     });
 
     unrelatedTagDocs.forEach((unrelatedTagDoc) => {

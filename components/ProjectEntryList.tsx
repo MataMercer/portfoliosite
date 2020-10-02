@@ -16,7 +16,6 @@ export default function ProjectEntryList() {
   const projectEntriesPerRow = 3;
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('loading');
 
-  const router = useRouter();
   useEffect(() => {
     if (status === 'loading') {
       getProjectEntries()
@@ -63,6 +62,7 @@ export default function ProjectEntryList() {
                           completionStatus={projectEntry.completionStatus}
                           tags={projectEntry.tags}
                           pictureUrls={projectEntry.pictureUrls}
+                          updatedAt={projectEntry.updatedAt}
                         />
                       </a>
                     </Link>

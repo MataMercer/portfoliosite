@@ -37,22 +37,34 @@ const ProjectEntryListItem = ({
   return (
     <ListGroupItem>
       <Row>
-        <Col sm="10">
+        <Col sm="9">
           <Row>
             <strong>{projectEntry.title}</strong>
           </Row>
+
           <Row>{projectEntry.introDescription}</Row>
+          <Row>
+            <i>{`Last updated on ${projectEntry.updatedAt
+              .toDate()
+              .toDateString()}`}</i>
+          </Row>
         </Col>
         {showDeleteWarning ? (
           <Col>
             <Row>
               <Col>
-                <Button color="danger" onClick={handleDeleteButtonClick}>
+                <Button
+                  color="danger"
+                  size="sm"
+                  onClick={handleDeleteButtonClick}
+                >
                   Delete
                 </Button>
               </Col>
               <Col>
-                <Button onClick={handleCancelButtonClick}>Cancel</Button>
+                <Button size="sm" onClick={handleCancelButtonClick}>
+                  Cancel
+                </Button>
               </Col>
             </Row>
           </Col>
@@ -66,9 +78,9 @@ const ProjectEntryListItem = ({
               </Link>
             </Col>
             <Col>
-              <button type="button" onClick={handleTrashcanButtonClick}>
+              <Button type="button" onClick={handleTrashcanButtonClick}>
                 <FontAwesomeIcon icon={faTrashAlt} />
-              </button>
+              </Button>
             </Col>
           </>
         )}
