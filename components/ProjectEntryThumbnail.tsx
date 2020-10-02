@@ -25,17 +25,65 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
     tags,
     completionStatus,
   } = props;
+
+  const [showSecondPicture, setShowSecondPicture] = useState(false);
   document?.querySelector('a')?.addEventListener('click', function (e) {
     e.stopPropagation();
   });
+
+  const ImageShowSecondPictureOnHover = ({
+    pictureSrc,
+    picture2Src,
+    altText,
+  }: any) => {
+    return (
+      <div>
+        <img
+          className={`project-entry-thumbnail-image ${
+            picture2Src ? 'project-entry-thumbnail-image-first' : ''
+          }`}
+          src={pictureSrc}
+          alt={altText}
+          hidden={showSecondPicture && picture2Src}
+        />
+
+        <img
+          className="project-entry-thumbnail-image project-entry-thumbnail-image-second"
+          alt={`${altText}2`}
+          src={picture2Src}
+          hidden={!(showSecondPicture && picture2Src)}
+        />
+      </div>
+    );
+  };
+
   return (
-    <Container className="project-entry" color="primary" fluid="xs">
+    <Container
+      className="project-entry"
+      color="primary"
+      fluid="xs"
+      onMouseOver={() => {
+        setTimeout(() => {
+          setShowSecondPicture(true);
+        }, 140);
+      }}
+      onFocus={() => {
+        setShowSecondPicture(true);
+      }}
+      onMouseLeave={() => {
+        setTimeout(() => {
+          setShowSecondPicture(false);
+        }, 140);
+      }}
+    >
       <Row>
         <Col>
-          <img
-            className="project-entry-screenshot"
-            src={pictureUrls.length > 0 ? pictureUrls[0] : '/no-image.png'}
-            alt="project entry screenshot thumbnail"
+          <ImageShowSecondPictureOnHover
+            pictureSrc={
+              pictureUrls.length > 0 ? pictureUrls[0] : '/no-image.png'
+            }
+            picture2Src={pictureUrls.length > 1 ? pictureUrls[1] : ''}
+            altText="ProjectEntryThumbnail"
           />
         </Col>
       </Row>

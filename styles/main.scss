@@ -172,6 +172,16 @@ article {
   max-width: 2em;
 }
 
+.project-entry-thumbnail-image {
+  object-fit: contain;
+  width: 100%;
+  height: 15em;
+}
+
+.project-entry-thumbnail-gif {
+  width: 100%;
+}
+
 .project-entry-screenshot {
   width: 100%;
 }
@@ -199,6 +209,12 @@ article {
   background-color: darken($color: $page-color, $amount: 10);
   img {
     filter: brightness(95%);
+  }
+  .project-entry-thumbnail-image-first {
+    opacity: 0;
+  }
+  .project-entry-thumbnail-image-second {
+    opacity: 1;
   }
 }
 
