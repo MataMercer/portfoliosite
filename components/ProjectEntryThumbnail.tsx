@@ -27,9 +27,6 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
   } = props;
 
   const [showSecondPicture, setShowSecondPicture] = useState(false);
-  document?.querySelector('a')?.addEventListener('click', function (e) {
-    e.stopPropagation();
-  });
 
   const ImageShowSecondPictureOnHover = ({
     pictureSrc,
@@ -69,6 +66,9 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
       }}
       onFocus={() => {
         setShowSecondPicture(true);
+      }}
+      onBlur={() => {
+        setShowSecondPicture(false);
       }}
       onMouseLeave={() => {
         setTimeout(() => {
