@@ -183,6 +183,7 @@ article {
 }
 
 .project-entry-screenshot {
+  object-fit: contain;
   width: 100%;
 }
 .project-entry-anchor:hover {
