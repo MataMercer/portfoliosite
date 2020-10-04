@@ -174,8 +174,14 @@ article {
 
 .project-entry-thumbnail-image {
   object-fit: contain;
-  width: 100%;
   height: 15em;
+  width: 100%;
+}
+
+.project-entry-thumbnail-image-second {
+  object-fit: contain;
+  height: 0em;
+  width: 100%;
 }
 
 .project-entry-thumbnail-gif {
@@ -201,9 +207,6 @@ article {
   .project-entry-text {
     padding-top: 1.5em;
   }
-  img {
-    transition: all 0.3s ease 0s;
-  }
 }
 
 .project-entry:hover {
@@ -212,10 +215,14 @@ article {
     filter: brightness(95%);
   }
   .project-entry-thumbnail-image-first {
+    object-fit: fill;
+    height: 0;
     opacity: 0;
   }
+
   .project-entry-thumbnail-image-second {
-    opacity: 1;
+    object-fit: contain;
+    height: 15em;
   }
 }
 

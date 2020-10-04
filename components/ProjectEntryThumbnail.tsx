@@ -28,30 +28,10 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
     completionStatus,
   } = props;
 
-  const [showSecondPicture, setShowSecondPicture] = useState(false);
-
-  const ImageShowSecondPictureOnHover = ({
-    pictureSrc,
-    picture2Src,
-    altText,
-  }: any) => {
+  const ImageShowSecondPictureOnHover = ({ pictureSrc, altText }: any) => {
     return (
       <div>
-        <img
-          className={`project-entry-thumbnail-image ${
-            picture2Src ? 'project-entry-thumbnail-image-first' : ''
-          }`}
-          src={pictureSrc}
-          alt={altText}
-          hidden={showSecondPicture && picture2Src}
-        />
-
-        <img
-          className="project-entry-thumbnail-image project-entry-thumbnail-image-second"
-          alt={`${altText}2`}
-          src={picture2Src}
-          hidden={!(showSecondPicture && picture2Src)}
-        />
+        <img src={pictureSrc} alt={altText} />
       </div>
     );
   };
@@ -62,35 +42,28 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
       href={`/?projectentryid=${id}`}
       as={`/projectentry/${id}`}
     >
-      <a
-        onMouseOver={() => {
-          setTimeout(() => {
-            setShowSecondPicture(true);
-          }, 140);
-        }}
-        onFocus={() => {
-          setShowSecondPicture(true);
-        }}
-        onBlur={() => {
-          setShowSecondPicture(false);
-        }}
-        onMouseLeave={() => {
-          setTimeout(() => {
-            setShowSecondPicture(false);
-          }, 140);
-        }}
-        className="project-entry-anchor"
-      >
+      <a className="project-entry-anchor">
         <Container className="project-entry" color="primary" fluid="xs">
           <Row>
             <Col>
-              <ImageShowSecondPictureOnHover
-                pictureSrc={
-                  pictureUrls.length > 0 ? pictureUrls[0] : '/no-image.png'
-                }
-                picture2Src={pictureUrls.length > 1 ? pictureUrls[1] : ''}
-                altText="ProjectEntryThumbnail"
+              <img
+                className={`project-entry-thumbnail-image ${
+                  pictureUrls.length > 1
+                    ? 'project-entry-thumbnail-image-first'
+                    : ''
+                }`}
+                src={pictureUrls.length > 0 ? pictureUrls[0] : '/no-image.png'}
+                alt="ProjectEntryThumbnail"
               />
+              {pictureUrls.length > 1 ? (
+                <img
+                  className="project-entry-thumbnail-image-second"
+                  src={
+                    pictureUrls.length > 1 ? pictureUrls[1] : '/no-image.png'
+                  }
+                  alt="ProjectEntryThumbnail"
+                />
+              ) : null}
             </Col>
           </Row>
           <div className="project-entry-text">
