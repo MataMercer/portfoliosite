@@ -16,7 +16,7 @@ const NavBar = () => {
           <img
             className="navbar-brand-image"
             src="/matamercerlogo2020.svg"
-            alt="navbar brand"
+            alt="Mercer Denholm Logo"
           />
           <span className="navbar-brand-text">Mercer Denholm</span>
         </div>

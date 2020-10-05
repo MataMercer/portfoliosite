@@ -25,9 +25,14 @@ import { getProjectEntry } from '../firebase/repositories/ProjectEntryRepository
 type ProjectEntryProps = {
   projectEntryId?: string;
   projectEntry?: IProjectEntry;
+  setPageTitle?: (pageTitle: string) => void;
 };
 
-const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
+const ProjectEntry = ({
+  projectEntryId,
+  projectEntry,
+  setPageTitle,
+}: ProjectEntryProps) => {
   const [title, setTitle] = useState<string>('');
   const [introDescription, setIntroDescription] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -60,6 +65,10 @@ const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
               setCompletionStatus(fetchedProjectEntry.completionStatus);
               setTags(fetchedProjectEntry.tags);
               setUpdatedAt(fetchedProjectEntry.updatedAt);
+
+              if (setPageTitle) {
+                setPageTitle(fetchedProjectEntry.title);
+              }
             }
           })
           .catch((err) => {
@@ -76,9 +85,13 @@ const ProjectEntry = ({ projectEntryId, projectEntry }: ProjectEntryProps) => {
         setCompletionStatus(projectEntry.completionStatus);
         setTags(projectEntry.tags);
         setUpdatedAt(projectEntry.updatedAt);
+
+        if (setPageTitle) {
+          setPageTitle(projectEntry.title);
+        }
       }
     }
-  }, [errors, projectEntry, projectEntryId, status]);
+  }, [errors, projectEntry, projectEntryId, setPageTitle, status]);
 
   const Carousel = () => (
     <ThumbnailCarousel
