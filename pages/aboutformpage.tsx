@@ -6,6 +6,7 @@ const AboutFormPage = () => {
   return (
     <div>
       <Layout title="Manage About Page">
+        <h1>About Page Form</h1>
         <AboutForm />
       </Layout>
     </div>

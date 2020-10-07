@@ -69,9 +69,9 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
           <div className="project-entry-text">
             <Row>
               <Col>
-                <h4>
+                <h2>
                   <strong>{title}</strong>
-                </h4>
+                </h2>
               </Col>
             </Row>
 

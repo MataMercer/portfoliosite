@@ -20,6 +20,7 @@ export default function MarkdownEditorInput(props: MarkdownEditorInputProps) {
           <FormGroup>
             <Label for={id}>{label}</Label>
             <Input
+              rows={15}
               onChange={handleTextChange}
               type="textarea"
               name={text}

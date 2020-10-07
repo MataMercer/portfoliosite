@@ -3,10 +3,9 @@
 @import '../node_modules/bootstrap/scss/bootstrap';
 @import './BootstrapCustomStyling.scss';
 @import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
+@import './ThemeToggler.scss';
+@import './ReactTags.scss';
 // @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Recursive:wght@600&display=swap');
-
-$page-color: #fafafa;
-$black-color: #272727;
 
 @font-face {
   font-family: 'Recursive';
@@ -22,6 +21,7 @@ $black-color: #272727;
 body {
   font-family: 'Open Sans', 'SF Pro Icons', 'Helvetica', 'Arial', sans-serif;
   font-size: larger;
+  background-color: $page-color;
   // padding: 20px 20px 60px;
   // max-width: 680px;
   // margin: 0 auto;
@@ -117,27 +117,31 @@ header {
   vertical-align: middle;
   li {
     display: inline-block;
-    border-radius: 3em;
-    margin-right: 1em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+    margin-bottom: 0.5em;
     a {
-      padding: 0px 20px;
+      border-radius: 3em;
+      padding: 3px 20px;
       transition: all 0.3s ease 0s;
     }
   }
 
   li:hover {
-    background-color: $primary;
     a {
+      background-color: $primary;
       color: white;
       text-decoration: none;
+      box-shadow: 5px 5px 20px -10px $primary;
     }
   }
 
   .navbar-item-active {
-    background-color: $primary;
     a {
+      background-color: $primary;
       color: white;
       text-decoration: none;
+      box-shadow: 5px 5px 20px -10px $primary;
     }
   }
 }
@@ -155,6 +159,7 @@ header {
 .navbar-brand:hover {
   background-color: $primary;
 
+  box-shadow: 5px 5px 20px -10px $primary;
   color: white;
 }
 
@@ -200,21 +205,27 @@ article {
   color: black;
   margin-top: 1em;
   margin-bottom: 1em;
-  background-color: darken($color: $page-color, $amount: 4);
+  background-color: $page-color-lighter-1;
   border-radius: 2em;
   transition: all 0.3s ease 0s;
   font-size: medium;
   padding: 1.5em;
+  box-shadow: 5px 5px 25px 0 $page-color-darker-4;
   .project-entry-text {
     padding-top: 1.5em;
   }
   img {
     transition: all 0.3s ease 0s;
   }
+  h2 {
+    font-size: x-large;
+  }
 }
 
 .project-entry:hover {
-  background-color: darken($color: $page-color, $amount: 10);
+  background-color: $page-color-lighter-2;
+  box-shadow: 5px 5px 50px -10px $page-color-darker-4;
+  transform: scale(1.02);
   img {
     filter: brightness(95%);
   }
@@ -316,65 +327,127 @@ footer {
   }
   text-align: center;
 }
-
-// TAGS
-
-div.ReactTags__tags {
-  position: relative;
+input.form-control {
+  border-radius: 3em;
 }
 
-/* Styles for the input */
-div.ReactTags__tagInput {
-  width: 200px;
-  border-radius: 2px;
-  display: inline-block;
-}
-div.ReactTags__tagInput input.ReactTags__tagInputField,
-div.ReactTags__tagInput input.ReactTags__tagInputField:focus {
-  height: 31px;
-  margin: 0;
-  width: 100%;
-  border: 1px solid #eee;
-  padding: 0 4px;
-}
+body.dark-theme {
+  color: $page-color;
+  background-color: $black-color;
+  a {
+    // color: #9292fa;
+    color: #ff73dc;
+  }
+  .navbar-items {
+    li {
+      a {
+      }
+    }
 
-/* Styles for selected tags */
-div.ReactTags__selected span.ReactTags__tag {
-  border: 1px solid #ddd;
-  background: #eee;
-  display: inline-block;
-  padding: 5px;
-  margin: 0 5px;
-  cursor: move;
-  border-radius: 2px;
-}
-div.ReactTags__selected a.ReactTags__remove {
-  color: #aaa;
-  margin-left: 5px;
-  cursor: pointer;
-}
+    li:hover {
+      a {
+        box-shadow: 5px 5px 20px -10px $primary;
+      }
+    }
 
-/* Styles for suggestions */
-div.ReactTags__suggestions {
-  position: absolute;
-}
-div.ReactTags__suggestions ul {
-  list-style-type: none;
-  box-shadow: 0.05em 0.01em 0.5em rgba(0, 0, 0, 0.2);
-  background: white;
-  width: 200px;
-}
-div.ReactTags__suggestions li {
-  border-bottom: 1px solid #ddd;
-  padding: 5px 10px;
-  margin: 0;
-}
-div.ReactTags__suggestions li mark {
-  text-decoration: underline;
-  background: none;
-  font-weight: 600;
-}
-div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
-  background: #b7cfe0;
-  cursor: pointer;
+    .navbar-item-active {
+      a {
+        box-shadow: 5px 5px 20px -10px $primary;
+      }
+    }
+  }
+  footer {
+    a {
+      color: white;
+    }
+  }
+
+  input {
+    background-color: $black-color-lighter-1;
+    color: $page-color;
+  }
+  select {
+    background-color: $black-color-lighter-1;
+    color: $page-color;
+  }
+  textarea {
+    background-color: $black-color-lighter-1;
+    border: none;
+    color: $page-color;
+  }
+  textarea:focus {
+    background-color: $black-color-lighter-1;
+    color: $page-color;
+  }
+  input:focus {
+    background-color: $black-color-lighter-1;
+    color: $page-color;
+  }
+  input {
+    border: none;
+  }
+
+  .theme-toggler {
+    box-shadow: 5px 5px 25px 0 $black-color-darker-1;
+    background-color: $black-color-lighter-1;
+    color: $page-color;
+  }
+
+  .theme-toggler:hover {
+    background-color: $black-color-lighter-2;
+    box-shadow: 5px 5px 50px -10px $black-color-darker-1;
+  }
+
+  .project-entry {
+    background-color: $black-color-lighter-1;
+    box-shadow: 5px 5px 25px 0 $black-color-darker-1;
+    color: $page-color;
+  }
+  .project-entry:hover {
+    background-color: $black-color-lighter-2;
+    box-shadow: 5px 5px 50px -10px $black-color-darker-1;
+    img {
+      filter: brightness(105%);
+    }
+  }
+
+  .project-entry-thumbnail-text-panel-modal {
+    background-color: $black-color;
+  }
+
+  button.close {
+    color: $page-color;
+  }
+
+  .nav {
+    background-color: $black-color;
+    a {
+      color: $page-color;
+    }
+    .active {
+      background-color: $primary;
+      color: $page-color;
+      border: none;
+      box-shadow: 5px 5px 20px -10px $primary;
+    }
+  }
+  .nav-tabs {
+    border: none;
+  }
+  .nav-link:hover {
+    border: none;
+    background-color: $primary;
+
+    box-shadow: 5px 5px 20px -10px $primary;
+  }
+  .tab-content {
+    background-color: $black-color;
+    border: none;
+  }
+  .card {
+    background-color: $black-color-darker-1;
+  }
+  .list-group-item {
+    background-color: $black-color;
+  }
 }

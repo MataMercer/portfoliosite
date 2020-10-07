@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../auth/auth';
+import ThemeToggler from './ThemeToggler';
 
 const NavBar = () => {
   const router = useRouter();
@@ -21,8 +22,12 @@ const NavBar = () => {
           <span className="navbar-brand-text">Mercer Denholm</span>
         </div>
       </Link>
+
       <nav>
         <ul className="navbar-items">
+          <li>
+            <ThemeToggler />
+          </li>
           <li
             className={`navbar-item ${
               router.pathname === '/' ? 'navbar-item-active' : ''
@@ -74,7 +79,7 @@ const AuthenticatedMenu = () => {
         </Link>
       </li>
       <li className="navbar-item" onClick={logout}>
-        Logout
+        <a>Logout</a>
       </li>
     </ul>
   );

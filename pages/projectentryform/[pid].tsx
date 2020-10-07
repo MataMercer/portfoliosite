@@ -9,7 +9,7 @@ function ProjectEntryFormPage() {
   return (
     <div>
       <Layout title="Project Entry Form">
-        <h1> Project Entry</h1>
+        <h1> Project Entry Form</h1>
         <ProjectEntryForm projectEntryId={pid as string} />
       </Layout>
     </div>

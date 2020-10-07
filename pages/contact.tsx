@@ -24,7 +24,7 @@ export default function Contact() {
           </FormGroup>
           <FormGroup>
             <Label for="exampleText">Message</Label>
-            <Input type="textarea" name="message" id="message" />
+            <Input rows={10} type="textarea" name="message" id="message" />
           </FormGroup>
           <Button color="primary" type="submit">
             Send
