@@ -17,10 +17,12 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { FirebaseError } from 'firebase';
 import { useRouter } from 'next/router';
+import Skeleton from 'react-loading-skeleton';
 import { IProjectEntry } from '../ModelTypes/interfaces';
 import ThumbnailCarousel from './ThumbnailCarousel';
 import CompletionStatusBadge from './CompletionStatusBadge';
 import { getProjectEntry } from '../firebase/repositories/ProjectEntryRepository';
+import ErrorAlert from './ErrorAlert';
 
 type ProjectEntryProps = {
   projectEntryId?: string;
@@ -69,6 +71,8 @@ const ProjectEntry = ({
               if (setPageTitle) {
                 setPageTitle(fetchedProjectEntry.title);
               }
+
+              setStatus('idle');
             }
           })
           .catch((err) => {
@@ -89,6 +93,7 @@ const ProjectEntry = ({
         if (setPageTitle) {
           setPageTitle(projectEntry.title);
         }
+        setStatus('idle');
       }
     }
   }, [errors, projectEntry, projectEntryId, setPageTitle, status]);
@@ -99,59 +104,82 @@ const ProjectEntry = ({
     />
   );
 
-  const Text = () => (
-    <>
-      <Row>
-        <h2>{title}</h2>
-      </Row>
-      {repoLink ? (
+  const Text = () =>
+    status === 'loading' ? (
+      <>
+        <Skeleton height={50} />
+        <Skeleton count={2} />
         <Row>
-          <a target="_blank" rel="noreferrer" href={repoLink}>
-            <FontAwesomeIcon icon={faGithub} /> Repository
-          </a>
+          <Col>
+            <Skeleton />
+          </Col>
+          <Col>
+            <Skeleton />
+          </Col>
+          <Col>
+            <Skeleton />
+          </Col>
+          <Col>
+            <Skeleton />
+          </Col>
         </Row>
-      ) : (
+        <Skeleton count={15} />
+      </>
+    ) : (
+      <>
         <Row>
-          <div>No repository available</div>
+          <ErrorAlert errors={errors} />
         </Row>
-      )}
-      {demoLink ? (
         <Row>
-          <a target="_blank" rel="noreferrer" href={demoLink}>
-            <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
-          </a>
+          <h2>{title}</h2>
         </Row>
-      ) : (
+        {repoLink ? (
+          <Row>
+            <a target="_blank" rel="noreferrer" href={repoLink}>
+              <FontAwesomeIcon icon={faGithub} /> Repository
+            </a>
+          </Row>
+        ) : (
+          <Row>
+            <div>No repository available</div>
+          </Row>
+        )}
+        {demoLink ? (
+          <Row>
+            <a target="_blank" rel="noreferrer" href={demoLink}>
+              <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
+            </a>
+          </Row>
+        ) : (
+          <Row>
+            <div>No demo available</div>
+          </Row>
+        )}
+        {tags ? (
+          <Row>
+            <CompletionStatusBadge completionStatus={completionStatus} />
+            {Object.keys(tags).map((tag) => (
+              <Badge key={tag} color="info">
+                {tag}
+              </Badge>
+            ))}
+          </Row>
+        ) : null}
         <Row>
-          <div>No demo available</div>
+          <ReactMarkdown
+            className="project-entry-description"
+            source={description}
+          />
         </Row>
-      )}
-      {tags ? (
         <Row>
-          <CompletionStatusBadge completionStatus={completionStatus} />
-          {Object.keys(tags).map((tag) => (
-            <Badge key={tag} color="info">
-              {tag}
-            </Badge>
-          ))}
+          <i>
+            {updatedAt
+              ? `Last updated on ${updatedAt.toDate().toDateString()}`
+              : ''}
+          </i>
         </Row>
-      ) : null}
-      <Row>
-        <ReactMarkdown
-          className="project-entry-description"
-          source={description}
-        />
-      </Row>
-      <Row>
-        <i>
-          {updatedAt
-            ? `Last updated on ${updatedAt.toDate().toDateString()}`
-            : ''}
-        </i>
-      </Row>
-    </>
-  );
-
+      </>
+    );
   return projectEntryId ? (
     <Row>
       <Col lg="8" className="project-entry-thumbnail-carousel-panel-no-modal">
