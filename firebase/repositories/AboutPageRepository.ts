@@ -1,6 +1,6 @@
 import { db } from '../config';
 
-async function getAboutPage() {
+async function getAboutPageRequest() {
   const aboutPageRef = db.collection('pages').doc('about');
   return aboutPageRef?.get().then((doc) => {
     if (doc.exists) {
@@ -10,11 +10,11 @@ async function getAboutPage() {
   });
 }
 
-async function updateAboutPage(content: string) {
+async function updateAboutPageRequest(content: string) {
   const aboutPageRef = db.collection('pages').doc('about');
   return aboutPageRef?.set({
     content,
   });
 }
 
-export { getAboutPage, updateAboutPage };
+export { getAboutPageRequest, updateAboutPageRequest };

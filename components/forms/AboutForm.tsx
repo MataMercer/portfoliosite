@@ -1,73 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, Spinner } from 'reactstrap';
+import React, { useEffect } from 'react';
+import { Button, Form, Spinner } from 'reactstrap';
 import Router from 'next/router';
-import { FirebaseError } from 'firebase';
+import { useForm, Controller } from 'react-hook-form';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
-import {
-  getAboutPage,
-  updateAboutPage,
-} from '../../firebase/repositories/AboutPageRepository';
+import useAboutPage from '../../firebase/hooks/useAboutPage';
 import ErrorAlert from '../ErrorAlert';
 
-function AboutForm() {
-  const [aboutText, setAboutText] = useState<string>('');
-  const [status, setStatus] = useState<
-    'idle' | 'loading' | 'submitting' | 'error'
-  >('loading');
-  const [errors, setErrors] = useState<FirebaseError[]>([]);
+type AboutFormData = {
+  aboutPageInput: string;
+};
 
-  const handleAboutTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAboutText(e.target.value);
-  };
+function AboutForm() {
+  const [aboutPage, updateAboutPage, status, errors] = useAboutPage();
+  const { setValue, control, handleSubmit } = useForm<AboutFormData>({
+    criteriaMode: 'all',
+  });
 
   useEffect(() => {
-    if (status === 'loading') {
-      getAboutPage()
-        .then((res) => {
-          setAboutText(res);
-          setStatus('idle');
-        })
-        .catch((err) => {
-          setStatus('error');
-          setErrors([...errors, err]);
-        });
-    }
-  }, []);
+    setValue('aboutPageInput', aboutPage);
+  }, [aboutPage, setValue]);
 
-  const handleFormSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus('submitting');
-    await updateAboutPage(aboutText)
-      .then(() => {
-        setStatus('idle');
-        Router.push('/admindashboard');
-      })
-      .catch((err) => {
-        setErrors([...errors, err]);
-        setStatus('error');
-      });
-  };
+  const onSubmit = handleSubmit((data) => {
+    updateAboutPage(data.aboutPageInput).then(() => {
+      Router.push('/admindashboard');
+    });
+  });
 
   return (
     <>
-      <Form onSubmit={handleFormSubmit}>
+      <Form onSubmit={onSubmit}>
         <ErrorAlert errors={errors} />
-        <MarkdownEditorInput
-          label="About Page Content"
-          name="aboutText"
-          id="aboutText"
-          handleTextChange={handleAboutTextChange}
-          text={aboutText}
+        <Controller
+          name="aboutPageInput"
+          control={control}
+          defaultValue={aboutPage}
+          render={({ field }) => {
+            return (
+              <MarkdownEditorInput
+                label="About Page Content"
+                id="aboutPageInput"
+                text={field.value}
+                handleTextChange={field.onChange}
+                name="aboutPageInput"
+              />
+            );
+          }}
         />
 
-        <Button
-          color="primary"
-          type="submit"
-          disabled={status === 'loading' || status === 'submitting'}
-        >
+        <Button color="primary" type="submit" disabled={status === 'loading'}>
           Save
         </Button>
-        {status === 'submitting' ? <Spinner /> : null}
+        {status === 'loading' ? <Spinner /> : null}
       </Form>
     </>
   );

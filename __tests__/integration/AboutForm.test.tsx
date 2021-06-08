@@ -17,7 +17,7 @@ import AboutForm from '../../components/forms/AboutForm';
 import {
   getAboutPage,
   updateAboutPage,
-} from '../../firebase/repositories/AboutPageRepository';
+} from '../../firebase/hooks/useAboutPage';
 
 jest.mock('../../firebase/repositories/AboutPageRepository');
 const aboutMockText = 'About mock text';
