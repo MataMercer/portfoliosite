@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Alert, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 // eslint-disable-next-line no-unused-vars
-import { FirebaseError } from 'firebase';
+import firebase from 'firebase';
 import { useAuth } from '../../auth/auth';
 import ErrorAlert from '../ErrorAlert';
 
 export default function LoginForm() {
   const { login } = useAuth();
-  const [error, setError] = useState<FirebaseError>();
+  const [error, setError] = useState<firebase.FirebaseError>();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 

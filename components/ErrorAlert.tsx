@@ -1,8 +1,9 @@
+import React from 'react';
 import { Alert } from 'reactstrap';
-import { FirebaseError } from 'firebase';
+import firebase from 'firebase';
 
 type ErrorAlertProps = {
-  errors: FirebaseError[];
+  errors: firebase.FirebaseError[];
 };
 
 const ErrorAlert = ({ errors }: ErrorAlertProps) => {

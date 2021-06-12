@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import Router from 'next/router';
-import { FirebaseError } from 'firebase';
+import firebase from 'firebase';
 
 import { WithContext as ReactTags, Tag } from 'react-tag-input';
 import { timestamp } from '../../firebase/config';
@@ -41,7 +41,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
   const [status, setStatus] = useState<
     'idle' | 'loading' | 'submitting' | 'error'
   >('loading');
-  const [errors, setErrors] = useState<FirebaseError[]>([]);
+  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
 
   const disabled = () => {
     return status === 'submitting' || status === 'loading';
@@ -54,7 +54,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
     const uploadPictures = async (picturesToUpload: File[]) => {
       return Promise.all(
         picturesToUpload.map((picture: File) =>
-          uploadFile(picture).catch((error: FirebaseError) => error)
+          uploadFile(picture).catch((error: firebase.FirebaseError) => error)
         )
       );
     };
@@ -64,7 +64,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
         existingPictureUrls.map((existingPictureUrl) => {
           if (!pictureUrls.includes(existingPictureUrl)) {
             return deleteFile(existingPictureUrl).catch(
-              (error: FirebaseError) => error
+              (error: firebase.FirebaseError) => error
             );
           }
           return null;
@@ -86,7 +86,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
         await uploadPictures(pictures)
       ).filter((url) => {
         if (url instanceof Error) {
-          setErrors([...errors, url as FirebaseError]);
+          setErrors([...errors, url as firebase.FirebaseError]);
           errored = true;
           return false;
         }
@@ -107,7 +107,7 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
       const deleteResponses = await deletePictures();
       deleteResponses.forEach((res) => {
         if (res instanceof Error) {
-          setErrors([...errors, res as FirebaseError]);
+          setErrors([...errors, res as firebase.FirebaseError]);
           errored = true;
         } else {
           existingPictureUrls.filter((url) => url === res);
@@ -353,7 +353,6 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
 
         <MarkdownEditorInput
           label="Description"
-          name="description"
           id="description"
           handleTextChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setDescription(e.target.value)

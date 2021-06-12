@@ -15,7 +15,7 @@ import ReactMarkdown from 'react-markdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { FirebaseError } from 'firebase';
+import firebase from 'firebase';
 import { useRouter } from 'next/router';
 import Skeleton from 'react-loading-skeleton';
 import { IProjectEntry } from '../ModelTypes/interfaces';
@@ -49,7 +49,7 @@ const ProjectEntry = ({
     'idle' | 'loading' | 'submitting' | 'error'
   >('loading');
   const [updatedAt, setUpdatedAt] = useState<firebase.firestore.Timestamp>();
-  const [errors, setErrors] = useState<FirebaseError[]>([]);
+  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
 
   const router = useRouter();
   useEffect(() => {
@@ -166,10 +166,9 @@ const ProjectEntry = ({
           </Row>
         ) : null}
         <Row>
-          <ReactMarkdown
-            className="project-entry-description"
-            source={description}
-          />
+          <ReactMarkdown className="project-entry-description">
+            {description}
+          </ReactMarkdown>
         </Row>
         <Row>
           <i>

@@ -1,3 +1,4 @@
+import React from 'react';
 import '../styles/main.scss';
 // eslint-disable-next-line no-unused-vars
 import type { AppProps } from 'next/app';

@@ -41,7 +41,6 @@ function AboutForm() {
                 id="aboutPageInput"
                 text={field.value}
                 handleTextChange={field.onChange}
-                name="aboutPageInput"
               />
             );
           }}

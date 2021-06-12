@@ -1,6 +1,6 @@
 import { Row, Col, Modal, Container } from 'reactstrap';
-import { FirebaseError } from 'firebase';
-import { useState, useEffect } from 'react';
+import firebase from 'firebase';
+import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -11,7 +11,7 @@ import ErrorAlert from './ErrorAlert';
 import ProjectEntryThumbnail from './ProjectEntryThumbnail';
 
 export default function ProjectEntryList() {
-  const [errors, setErrors] = useState<FirebaseError[]>([]);
+  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
   const [projectEntries, setProjectEntries] = useState<IProjectEntry[]>([]);
   const projectEntriesPerRow = 3;
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('loading');

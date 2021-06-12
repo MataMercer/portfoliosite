@@ -1,3 +1,4 @@
+import React from 'react';
 import ProtectRoute from '../auth/ProtectRoute';
 import Layout from '../components/Layout';
 import AboutForm from '../components/forms/AboutForm';

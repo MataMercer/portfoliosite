@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { MouseEvent, useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from 'reactstrap';
 
@@ -54,7 +54,7 @@ const UploadInput = ({
   );
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  const handleDeleteClick = (e: React.MouseEvent<HTMLInputElement>) => {
+  const handleDeleteClick = (e: MouseEvent<HTMLButtonElement>) => {
     const indexToDelete = (e.target as HTMLInputElement).value.toString();
     // if the picture is an existing image, delete from url list. If not, delete from the file list.
     if (parseInt(indexToDelete, 10) >= pictureUrls.length) {

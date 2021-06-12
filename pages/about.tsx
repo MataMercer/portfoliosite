@@ -17,7 +17,7 @@ export default function About() {
             <Skeleton count={6} />
           </>
         ) : (
-          <ReactMarkdown source={aboutPage} />
+          <ReactMarkdown>{aboutPage}</ReactMarkdown>
         )}
       </Layout>
     </div>

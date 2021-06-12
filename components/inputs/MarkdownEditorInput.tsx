@@ -4,7 +4,6 @@ import ReactMarkdown from 'react-markdown';
 
 type MarkdownEditorInputProps = {
   label: string;
-  name: string;
   id: string;
   handleTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   text: string;
@@ -29,7 +28,7 @@ export default function MarkdownEditorInput(props: MarkdownEditorInputProps) {
             />
           </FormGroup>
         </Col>
-        <Col>{text ? <ReactMarkdown source={text} /> : null}</Col>
+        <Col>{text ? <ReactMarkdown>{text}</ReactMarkdown> : null}</Col>
       </Row>
     </>
   );

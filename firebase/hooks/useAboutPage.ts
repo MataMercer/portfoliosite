@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { FirebaseError } from 'firebase';
+import firebase from 'firebase';
 import { useCallback, useEffect, useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { RequestStatus } from '../../ModelTypes/RequestStatus';
@@ -7,12 +7,11 @@ import {
   getAboutPageRequest,
   updateAboutPageRequest,
 } from '../repositories/AboutPageRepository';
-import { db } from '../config';
 
 function useAboutPage() {
   const [aboutPage, setAboutPage] = useState<string>('');
   const [status, setStatus] = useState<RequestStatus>('loading');
-  const [errors, setErrors] = useState<FirebaseError[]>([]);
+  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
 
   useEffect(() => {
     if (status === 'loading') {

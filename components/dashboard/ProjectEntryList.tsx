@@ -1,8 +1,8 @@
+import React, { useState, useEffect } from 'react';
 import { Row, ListGroup } from 'reactstrap';
-import { useState, useEffect } from 'react';
 // eslint-disable-next-line no-unused-vars
 import Link from 'next/link';
-import { FirebaseError } from 'firebase';
+import firebase from 'firebase';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import ProjectEntryListItem from './ProjectEntryListItem';
 import {
@@ -13,7 +13,7 @@ import ErrorAlert from '../ErrorAlert';
 import { deleteFile } from '../../firebase/repositories/StorageRepository';
 
 export default function ProjectEntryList() {
-  const [errors, setErrors] = useState<FirebaseError[]>([]);
+  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
   const [projectEntries, setProjectEntries] = useState<IProjectEntry[]>([]);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('loading');
   useEffect(() => {

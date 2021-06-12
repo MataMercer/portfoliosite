@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { ListGroupItem, Row, Col, Button } from 'reactstrap';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { FirebaseError } from 'firebase';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
-import { deleteFile } from '../../firebase/repositories/StorageRepository';
-import ErrorAlert from '../ErrorAlert';
 
 type ProjectEntryListItemProps = {
   projectEntry: IProjectEntry;
@@ -25,11 +22,11 @@ const ProjectEntryListItem = ({
     setShowDeleteWarning(true);
   };
 
-  const handleCancelButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCancelButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     setShowDeleteWarning(false);
   };
 
-  const handleDeleteButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDeleteButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     setShowDeleteWarning(false);
     deleteProjectEntryAndCleanUpFiles(projectEntry);
   };

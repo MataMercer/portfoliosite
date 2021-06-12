@@ -1,3 +1,5 @@
+import firebase from 'firebase';
+
 export interface IProjectEntry {
   id?: string;
   title: string;
