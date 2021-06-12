@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import Router from 'next/router';
 // eslint-disable-next-line no-unused-vars
-import firebase, { FirebaseError } from 'firebase/app';
+import firebase from 'firebase/app';
 import { auth } from '../firebase/config';
 
 type AuthContextProps = {
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         redirectAfterLogout();
         // Sign-out successful.
       })
-      .catch((error: FirebaseError) => {
+      .catch((error: firebase.FirebaseError) => {
         // An error happened.
       });
   };
