@@ -13,7 +13,7 @@ import {
   Row,
   Col,
 } from 'reactstrap';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import Layout from '../components/Layout';
 import ProtectRoute from '../auth/ProtectRoute';
 import ProjectEntryList from '../components/dashboard/ProjectEntryList';
@@ -36,7 +36,7 @@ function AdminDashboard() {
           <Nav tabs>
             <NavItem>
               <NavLink
-                className={classnames({
+                className={classNames({
                   active: activeTab === '1',
                 })}
                 onClick={() => {
@@ -48,7 +48,7 @@ function AdminDashboard() {
             </NavItem>
             <NavItem>
               <NavLink
-                className={classnames({
+                className={classNames({
                   active: activeTab === '2',
                 })}
                 onClick={() => {
