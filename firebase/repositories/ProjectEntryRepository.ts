@@ -1,14 +1,14 @@
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import { db } from '../config';
 
-const getProjectEntry = async (projectEntryId: string) => {
+const getProjectEntryRequest = async (projectEntryId: string) => {
   const doc = await db.collection('projectentries').doc(projectEntryId).get();
   if (doc.exists && doc) {
     return { ...doc.data(), id: doc.id } as IProjectEntry;
   }
   return null;
 };
-const getProjectEntries = async () => {
+const getProjectEntriesRequest = async () => {
   const querySnapshot = (
     await db
       .collection('projectentries')
@@ -20,7 +20,7 @@ const getProjectEntries = async () => {
   });
 };
 
-const createProjectEntry = (projectEntryData: IProjectEntry) => {
+const createProjectEntryRequest = (projectEntryData: IProjectEntry) => {
   const projectEntriesRef = db.collection('projectentries').doc();
 
   const batch = db.batch();
@@ -53,7 +53,7 @@ const createProjectEntry = (projectEntryData: IProjectEntry) => {
 };
 
 // todo merge create and update.
-const updateProjectEntry = async (projectEntryData: IProjectEntry) => {
+const updateProjectEntryRequest = async (projectEntryData: IProjectEntry) => {
   const projectEntryRef = db
     .collection('projectentries')
     .doc(projectEntryData.id);
@@ -112,7 +112,7 @@ const updateProjectEntry = async (projectEntryData: IProjectEntry) => {
   });
 };
 
-const deleteProjectEntry = async (idToDelete: string) => {
+const deleteProjectEntryRequest = async (idToDelete: string) => {
   const projectEntryRef = db?.collection('projectentries').doc(idToDelete);
 
   const tags = db.collection('tags');
@@ -131,9 +131,9 @@ const deleteProjectEntry = async (idToDelete: string) => {
   return batch.commit();
 };
 export {
-  getProjectEntry,
-  getProjectEntries,
-  createProjectEntry,
-  updateProjectEntry,
-  deleteProjectEntry,
+  getProjectEntryRequest,
+  getProjectEntriesRequest,
+  createProjectEntryRequest,
+  updateProjectEntryRequest,
+  deleteProjectEntryRequest,
 };

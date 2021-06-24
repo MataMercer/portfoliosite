@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 // eslint-disable-next-line no-unused-vars
 import firebase from 'firebase';
 import { useAuth } from '../../auth/auth';

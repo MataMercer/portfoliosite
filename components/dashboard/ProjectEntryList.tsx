@@ -1,57 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Row, ListGroup } from 'reactstrap';
-// eslint-disable-next-line no-unused-vars
-import Link from 'next/link';
-import firebase from 'firebase';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import ProjectEntryListItem from './ProjectEntryListItem';
-import {
-  getProjectEntries,
-  deleteProjectEntry,
-} from '../../firebase/repositories/ProjectEntryRepository';
 import ErrorAlert from '../ErrorAlert';
-import { deleteFile } from '../../firebase/repositories/StorageRepository';
-
+import useProjectEntries from '../../firebase/hooks/useProjectEntry';
+import useStorage from '../../firebase/hooks/useStorage';
 export default function ProjectEntryList() {
-  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
-  const [projectEntries, setProjectEntries] = useState<IProjectEntry[]>([]);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('loading');
-  useEffect(() => {
-    if (status === 'loading') {
-      getProjectEntries()
-        .then((res) => {
-          setProjectEntries(res);
-          setStatus('idle');
-        })
-        .catch((err) => {
-          setErrors([...errors, err]);
-          setStatus('error');
-        });
-    }
-  }, [errors, status]);
-
+  const { projectEntries, deleteProjectEntry, status, errors } =
+    useProjectEntries({ initialLoad: true });
+  const { deleteFile } = useStorage();
   const deleteProjectEntryAndCleanUpFiles = (projectEntry: IProjectEntry) => {
-    let errored = false;
-    try {
-      projectEntry.pictureUrls.map((url) => deleteFile(url));
-    } catch (err) {
-      errored = true;
-      setErrors([...errors, err]);
-    }
-    if (errored) {
-      return;
-    }
-    deleteProjectEntry(projectEntry.id as string)
-      .then(() => {
-        setProjectEntries(
-          projectEntries.filter(
-            (projectEntryElem) => projectEntryElem.id !== projectEntry.id
-          )
-        );
-      })
-      .catch((err) => {
-        setErrors([...errors, err]);
-      });
+    Promise.all(projectEntry.pictureUrls.map((url) => deleteFile(url))).then(
+      () => {
+        deleteProjectEntry(projectEntry.id as string);
+      }
+    );
   };
 
   return (

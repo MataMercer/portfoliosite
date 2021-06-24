@@ -10,7 +10,7 @@ type AboutFormData = {
   aboutPageInput: string;
 };
 
-function AboutForm() {
+export default function AboutForm() {
   const [aboutPage, updateAboutPage, status, errors] = useAboutPage();
   const { setValue, control, handleSubmit } = useForm<AboutFormData>({
     criteriaMode: 'all',
@@ -34,18 +34,15 @@ function AboutForm() {
           name="aboutPageInput"
           control={control}
           defaultValue={aboutPage}
-          render={({ field }) => {
-            return (
-              <MarkdownEditorInput
-                label="About Page Content"
-                id="aboutPageInput"
-                text={field.value}
-                handleTextChange={field.onChange}
-              />
-            );
-          }}
+          render={({ field }) => (
+            <MarkdownEditorInput
+              label="About Page Content"
+              id="aboutPageInput"
+              text={field.value}
+              handleTextChange={field.onChange}
+            />
+          )}
         />
-
         <Button color="primary" type="submit" disabled={status === 'loading'}>
           Save
         </Button>
@@ -54,5 +51,3 @@ function AboutForm() {
     </>
   );
 }
-
-export default AboutForm;

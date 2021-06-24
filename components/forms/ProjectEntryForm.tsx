@@ -1,56 +1,84 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import Router from 'next/router';
 import firebase from 'firebase';
-
 import { WithContext as ReactTags, Tag } from 'react-tag-input';
 import { timestamp } from '../../firebase/config';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
-import UploadInput from '../inputs/UploadInput';
+import UploadInput, { FileInput } from '../inputs/UploadInput';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
-import {
-  getProjectEntry,
-  createProjectEntry,
-  updateProjectEntry,
-} from '../../firebase/repositories/ProjectEntryRepository';
-import {
-  deleteFile,
-  uploadFile,
-} from '../../firebase/repositories/StorageRepository';
 import ErrorAlert from '../ErrorAlert';
-import { getAllTags } from '../../firebase/repositories/TagRepository';
+import useStorage from '../../firebase/hooks/useStorage';
+import { useForm, Controller } from 'react-hook-form';
+import useProjectEntry from '../../firebase/hooks/useProjectEntry';
+import useTags from '../../firebase/hooks/useTags';
 
 type ProjectEntryFormProps = {
   projectEntryId: string;
 };
 
-function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
-  const [title, setTitle] = useState<string>('');
-  const [introDescription, setIntroDescription] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [repoLink, setRepoLink] = useState<string>('');
-  const [demoLink, setDemoLink] = useState<string>('');
-  const [completionStatus, setCompletionStatus] = useState<
-    'inProgress' | 'onHold' | 'completed'
-  >('inProgress');
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
-  const [pictures, setPictures] = useState<File[]>([]);
-  const [pictureUrls, setPictureUrls] = useState<string[]>([]);
-  const [existingPictureUrls, setExistingPictureUrls] = useState<string[]>([]);
-  const [status, setStatus] = useState<
-    'idle' | 'loading' | 'submitting' | 'error'
-  >('loading');
-  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
+type ProjectEntryFormData = {
+  projectEntryForm: IProjectEntry;
+  pictureFiles: FileInput[];
+  reactTags: Tag[];
+};
 
-  const disabled = () => {
-    return status === 'submitting' || status === 'loading';
-  };
+export default function ProjectEntryForm({
+  projectEntryId,
+}: ProjectEntryFormProps) {
+  const { reset, setValue, getValues, control, handleSubmit } =
+    useForm<ProjectEntryFormData>({
+      criteriaMode: 'all',
+    });
 
-  const handleFormSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrors([]);
-    setStatus('submitting');
+  const {
+    uploadFile,
+    deleteFile,
+    errors: storageErrors,
+    status: storageStatus,
+  } = useStorage();
+
+  const {
+    projectEntry: fetchedProjectEntry,
+    createProjectEntry,
+    updateProjectEntry,
+    errors: projectEntryErrors,
+    status: projectEntryStatus,
+  } = useProjectEntry({
+    initialLoad: !!projectEntryId,
+    projectEntryId,
+  });
+
+  const {
+    tags: tagSuggestions,
+    errors: tagSuggestionsErrors,
+    status: tagSuggestionsStatus,
+  } = useTags({ initialLoad: true });
+
+  const disabled =
+    storageStatus === 'loading' ||
+    projectEntryStatus === 'loading' ||
+    tagSuggestionsStatus === 'loading';
+
+  const loading =
+    storageStatus === 'loading' || projectEntryStatus === 'loading';
+
+  useEffect(() => {
+    if (fetchedProjectEntry) {
+      reset({
+        projectEntryForm: fetchedProjectEntry,
+        pictureFiles: fetchedProjectEntry.pictureUrls.map((url) => ({ url })),
+        reactTags: Object.keys(fetchedProjectEntry.tags).map((tagName) => ({
+          id: tagName,
+          text: tagName,
+        })),
+      });
+    }
+  }, [projectEntryId, fetchedProjectEntry]);
+
+  const onSubmit = (data: ProjectEntryFormData) => {
+    const pictureFiles = data.pictureFiles;
+
     const uploadPictures = async (picturesToUpload: File[]) => {
       return Promise.all(
         picturesToUpload.map((picture: File) =>
@@ -60,184 +88,65 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
     };
 
     const deletePictures = async () => {
+      const existingPictureUrls = fetchedProjectEntry?.pictureUrls;
+      if (!existingPictureUrls) {
+        return null;
+      }
+      const pictureUrls = pictureFiles
+        .filter((files) => !files.data)
+        .map((file) => file.url);
       return Promise.all(
         existingPictureUrls.map((existingPictureUrl) => {
           if (!pictureUrls.includes(existingPictureUrl)) {
-            return deleteFile(existingPictureUrl).catch(
-              (error: firebase.FirebaseError) => error
-            );
+            return deleteFile(existingPictureUrl);
           }
           return null;
         })
       );
     };
 
-    const convertTagsToObject = () => {
+    const convertReactTagsToFirebaseObject = () => {
       const obj: { [name: string]: true } = {};
-      tags.forEach((tag) => {
-        obj[tag.id] = true;
+      data.reactTags.forEach((reactTag) => {
+        obj[reactTag.id] = true;
       });
       return obj;
     };
 
-    const asyncSubmit = async () => {
-      let errored = false;
-      const successUploadedPictureUrls = (
-        await uploadPictures(pictures)
-      ).filter((url) => {
-        if (url instanceof Error) {
-          setErrors([...errors, url as firebase.FirebaseError]);
-          errored = true;
-          return false;
-        }
-        return true;
-      });
+    const submit = async () => {
+      const filesToUpload = pictureFiles
+        .map((file) => file.data)
+        .filter((file) => file) as File[];
+      const successUploadedPictureUrls = await uploadPictures(filesToUpload);
+      await deletePictures();
 
-      // Clean up if errored
-      if (errored) {
-        successUploadedPictureUrls.forEach((url) => {
-          deleteFile(url).catch((err) => {
-            setErrors([...errors, err]);
-          });
-        });
-        setStatus('error');
-        return;
-      }
+      const fileUrlsToKeep = pictureFiles
+        .filter((file) => !file.data)
+        .map((file) => file.url);
 
-      const deleteResponses = await deletePictures();
-      deleteResponses.forEach((res) => {
-        if (res instanceof Error) {
-          setErrors([...errors, res as firebase.FirebaseError]);
-          errored = true;
-        } else {
-          existingPictureUrls.filter((url) => url === res);
-        }
-      });
-
-      // clean up if errored.
-      if (errored) {
-        successUploadedPictureUrls.forEach((url) => {
-          deleteFile(url).catch((err) => {
-            setErrors([...errors, err]);
-          });
-        });
-        setStatus('error');
-        return;
-      }
-
-      if (projectEntryId) {
+      if (projectEntryId && fetchedProjectEntry) {
+        console.log(data.projectEntryForm.pictureUrls);
         updateProjectEntry({
-          id: projectEntryId,
-          title,
-          introDescription,
-          description,
-          repoLink,
-          demoLink,
-          completionStatus,
-          tags: convertTagsToObject(),
-          pictureUrls: [...pictureUrls, ...successUploadedPictureUrls],
+          ...data.projectEntryForm,
+          tags: convertReactTagsToFirebaseObject(),
+          pictureUrls: [...fileUrlsToKeep, ...successUploadedPictureUrls],
           updatedAt: timestamp() as firebase.firestore.Timestamp,
-        })
-          .then(() => {
-            Router.push('/admindashboard');
-          })
-          .catch((err) => {
-            successUploadedPictureUrls.forEach((url) => {
-              deleteFile(url).catch((err2) => {
-                setErrors([...errors, err2]);
-              });
-            });
-
-            deleteResponses.forEach((res) => {
-              existingPictureUrls.filter((url) => res === url);
-            });
-            setStatus('error');
-            setErrors([...errors, err]);
-          });
+        }).then(() => {
+          Router.push('/admindashboard');
+        });
       } else {
         createProjectEntry({
-          title,
-          description,
-          introDescription,
-          repoLink,
-          demoLink,
-          completionStatus,
-          tags: convertTagsToObject(),
+          ...data.projectEntryForm,
+          tags: convertReactTagsToFirebaseObject(),
           pictureUrls: successUploadedPictureUrls,
           updatedAt: timestamp() as firebase.firestore.Timestamp,
-        })
-          .then(() => {
-            Router.push('/admindashboard');
-          })
-          .catch((err) => {
-            successUploadedPictureUrls.forEach((url) => {
-              deleteFile(url).catch((err2) => {
-                setErrors([...errors, err2]);
-              });
-            });
-
-            deleteResponses.forEach((res) => {
-              existingPictureUrls.filter((url) => res === url);
-            });
-            setStatus('error');
-            setErrors([...errors, err]);
-          });
+        }).then(() => {
+          Router.push('/admindashboard');
+        });
       }
-      setStatus('idle');
     };
-    asyncSubmit();
+    submit();
   };
-
-  useEffect(() => {
-    const loadProjectEntry = async () => {
-      try {
-        const projectEntry = await getProjectEntry(projectEntryId);
-        if (projectEntry) {
-          setTitle(projectEntry.title);
-          setIntroDescription(projectEntry.introDescription);
-          setDescription(projectEntry.description);
-          setDemoLink(projectEntry.demoLink);
-          setRepoLink(projectEntry.repoLink);
-          setExistingPictureUrls(projectEntry.pictureUrls);
-          setPictureUrls(projectEntry.pictureUrls);
-          setCompletionStatus(projectEntry.completionStatus);
-          setTags(
-            Object.keys(projectEntry.tags).map((tagName) => ({
-              id: tagName,
-              text: tagName,
-            }))
-          );
-        } else {
-          throw new Error('This project entry does not or no longer exists');
-        }
-      } catch (err) {
-        setStatus('error');
-        setErrors([...errors, err]);
-      }
-    };
-    const loadTagSuggestions = async () => {
-      try {
-        const allTags = await getAllTags();
-
-        setTagSuggestions(allTags.map((tag) => ({ id: tag, text: tag })));
-      } catch (err) {
-        setStatus('error');
-        setErrors([...errors, err]);
-      }
-    };
-
-    if (status === 'loading') {
-      if (projectEntryId) {
-        Promise.all([loadProjectEntry(), loadTagSuggestions()]).then(() => {
-          setStatus('idle');
-        });
-      } else {
-        loadTagSuggestions().then(() => {
-          setStatus('idle');
-        });
-      }
-    }
-  }, [errors, projectEntryId, status]);
 
   const KeyCodes = {
     comma: 188,
@@ -246,138 +155,134 @@ function ProjectEntryForm({ projectEntryId }: ProjectEntryFormProps) {
   const delimiters = [KeyCodes.comma, KeyCodes.enter];
   return (
     <>
-      <Form onSubmit={handleFormSubmit}>
-        <ErrorAlert errors={errors} />
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <ErrorAlert errors={projectEntryErrors} />
+        <ErrorAlert errors={storageErrors} />
+        <ErrorAlert errors={tagSuggestionsErrors} />
         <FormGroup>
           <Label for="title">Title</Label>
-          <Input
-            type="text"
-            name="title"
-            id="title"
-            value={title}
-            disabled={disabled()}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setTitle(e.target.value)
-            }
+          <Controller
+            name="projectEntryForm.title"
+            control={control}
+            defaultValue={''}
+            render={({ field }) => <Input type="text" {...field} />}
           />
         </FormGroup>
-
         <FormGroup>
           <Label for="repoLink">Repository Link</Label>
-          <Input
-            type="text"
-            name="repoLink"
-            id="repoLink"
-            value={repoLink}
-            disabled={disabled()}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setRepoLink(e.target.value)
-            }
+          <Controller
+            name="projectEntryForm.repoLink"
+            control={control}
+            defaultValue={''}
+            render={({ field }) => <Input type="text" {...field} />}
           />
         </FormGroup>
-
         <FormGroup>
           <Label for="demoLink">Demo Link</Label>
-          <Input
-            type="text"
-            name="demoLink"
-            id="demoLink"
-            value={demoLink}
-            disabled={disabled()}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setDemoLink(e.target.value)
-            }
+          <Controller
+            name="projectEntryForm.demoLink"
+            control={control}
+            defaultValue={''}
+            render={({ field }) => <Input type="text" {...field} />}
           />
         </FormGroup>
-
         <FormGroup>
           <Label for="completionStatus">Completion Status</Label>
-          <Input
-            type="select"
-            name="completionStatus"
-            id="completionStatus"
-            value={completionStatus}
-            disabled={disabled()}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setCompletionStatus(
-                e.target.value as 'inProgress' | 'onHold' | 'completed'
-              )
-            }
-          >
-            <option value="inProgress">In Progress</option>
-            <option value="onHold">On Hold</option>
-            <option value="completed">Completed</option>
-          </Input>
+          <Controller
+            name="projectEntryForm.completionStatus"
+            control={control}
+            render={({ field }) => (
+              <Input type="select" {...field}>
+                <option value="inProgress">In Progress</option>
+                <option value="onHold">On Hold</option>
+                <option value="completed">Completed</option>
+              </Input>
+            )}
+          />
         </FormGroup>
-
         <FormGroup>
           <Label for="tags">Tags</Label>
-
-          {!disabled() ? (
-            <ReactTags
-              id="tags"
-              tags={tags}
-              handleAddition={(tag) => {
-                setTags([...tags, tag]);
-              }}
-              handleDelete={(i) => {
-                setTags(tags.filter((tag, index) => index !== i));
-              }}
-              handleDrag={(tag, currPos, newPos) => {
-                const newTags = tags.slice();
-                newTags.splice(currPos, 1);
-                newTags.splice(newPos, 0, tag);
-                setTags(newTags);
-              }}
-              delimiters={delimiters}
-              suggestions={tagSuggestions}
+          {!disabled ? (
+            <Controller
+              name="reactTags"
+              control={control}
+              defaultValue={[]}
+              render={({ field }) => (
+                <ReactTags
+                  id="tags"
+                  tags={field.value}
+                  handleAddition={(tag) => {
+                    setValue('reactTags', [...field.value, tag]);
+                  }}
+                  handleDelete={(i) => {
+                    setValue(
+                      'reactTags',
+                      field.value.filter((tag, index) => index !== i)
+                    );
+                    console.log(getValues('reactTags'));
+                  }}
+                  handleDrag={(tag, currPos, newPos) => {
+                    const newTags = field.value.slice();
+                    newTags.splice(currPos, 1);
+                    newTags.splice(newPos, 0, tag);
+                    setValue('reactTags', newTags);
+                  }}
+                  delimiters={delimiters}
+                  suggestions={tagSuggestions.map((tag) => ({
+                    id: tag,
+                    text: tag,
+                  }))}
+                />
+              )}
             />
           ) : (
             <Spinner />
           )}
         </FormGroup>
-
         <FormGroup>
           <Label for="introDescription">Intro Description</Label>
-          <Input
-            type="text"
-            name="introDescription"
-            id="introDescription"
-            value={introDescription}
-            disabled={disabled()}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setIntroDescription(e.target.value)
-            }
+          <Controller
+            name="projectEntryForm.introDescription"
+            control={control}
+            defaultValue={''}
+            render={({ field }) => <Input type="text" {...field} />}
           />
         </FormGroup>
-
-        <MarkdownEditorInput
-          label="Description"
-          id="description"
-          handleTextChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setDescription(e.target.value)
-          }
-          text={description}
+        <Controller
+          name="projectEntryForm.description"
+          control={control}
+          defaultValue={fetchedProjectEntry?.description}
+          render={({ field }) => (
+            <MarkdownEditorInput
+              label="Description"
+              id="description"
+              handleTextChange={field.onChange}
+              text={field.value}
+            />
+          )}
         />
-
         <FormGroup>
           <Label for="pictures">Pictures</Label>
-          <UploadInput
-            id="pictures"
-            setPictures={setPictures}
-            pictures={pictures}
-            setPictureUrls={setPictureUrls}
-            pictureUrls={pictureUrls}
+          <Controller
+            name="pictureFiles"
+            control={control}
+            defaultValue={[]}
+            render={({ field }) => (
+              <UploadInput
+                id="pictures"
+                setFileInputs={(files: FileInput[]) => {
+                  setValue('pictureFiles', files);
+                }}
+                fileInputs={field.value}
+              />
+            )}
           />
         </FormGroup>
-
-        <Button color="primary" type="submit" disabled={disabled()}>
+        <Button color="primary" type="submit" disabled={disabled}>
           save
         </Button>
-        {status === 'submitting' ? <Spinner /> : null}
+        {loading ? <Spinner /> : null}
       </Form>
     </>
   );
 }
-
-export default ProjectEntryForm;

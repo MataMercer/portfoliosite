@@ -1,5 +1,4 @@
 import React from 'react';
-import { Container } from 'reactstrap';
 import Layout from '../components/Layout';
 import ProjectEntryList from '../components/ProjectEntryList';
 

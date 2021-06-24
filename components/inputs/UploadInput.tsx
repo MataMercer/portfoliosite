@@ -3,27 +3,23 @@ import React, { MouseEvent, useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from 'reactstrap';
 
-type UploadInputProps = {
-  id: string;
-  pictures: File[];
-  pictureUrls: string[];
-  setPictures: (pictures: File[]) => void;
-  // existing picture urls
-  setPictureUrls: (pictureUrls: string[]) => void;
+export type FileInput = {
+  data?: File;
+  url?: string;
 };
 
-const UploadInput = ({
-  id,
-  pictures,
-  setPictures,
-  pictureUrls,
-  setPictureUrls,
-}: UploadInputProps) => {
-  const [pictureSrcs, setPictureSrcs] = useState<string[]>([]);
+type UploadInputProps = {
+  id: string;
+  fileInputs: FileInput[];
+  setFileInputs: (pictures: FileInput[]) => void;
+};
+
+const UploadInput = ({ id, fileInputs, setFileInputs }: UploadInputProps) => {
+  const [fileInputsState, setFileInputsState] = useState<FileInput[]>([]);
 
   useEffect(() => {
-    setPictureSrcs(pictureUrls);
-  }, [setPictureSrcs, pictureUrls]);
+    setFileInputsState(fileInputs);
+  }, [fileInputs]);
 
   const processFile = (file: File) => {
     const reader = new FileReader();
@@ -43,42 +39,29 @@ const UploadInput = ({
   };
 
   const onDrop = useCallback(
-    async (acceptedFiles) => {
+    async (acceptedFiles: File[]) => {
       const processedFiles = await Promise.all(
         acceptedFiles.map((acceptedFile: File) => processFile(acceptedFile))
       );
-      setPictureSrcs([...pictureSrcs, ...(processedFiles as string[])]);
-      setPictures([...pictures, ...acceptedFiles]);
+
+      const newFileInputs = acceptedFiles.map((acceptedFile, index) => ({
+        data: acceptedFile,
+        url: processedFiles[index] as string,
+      }));
+      setFileInputs([...fileInputs, ...newFileInputs]);
     },
-    [setPictures, pictures, setPictureSrcs, pictureSrcs]
+    [setFileInputs, fileInputs]
   );
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const handleDeleteClick = (e: MouseEvent<HTMLButtonElement>) => {
     const indexToDelete = (e.target as HTMLInputElement).value.toString();
-    // if the picture is an existing image, delete from url list. If not, delete from the file list.
-    if (parseInt(indexToDelete, 10) >= pictureUrls.length) {
-      setPictures(
-        pictures.filter(
-          (picture: File, index: number) => index.toString() !== indexToDelete
-        )
-      );
-    } else {
-      setPictureUrls(
-        pictureUrls.filter(
-          (pictureUrl: string, index: number) =>
-            index.toString() !== indexToDelete
-        )
-      );
-    }
-
-    setPictureSrcs(
-      pictureSrcs.filter(
-        (pictureSrc, index) => index.toString() !== indexToDelete
-      )
+    const newState = fileInputsState.filter(
+      (fileInputs, i) => i !== parseInt(indexToDelete, 10)
     );
+    setFileInputsState(newState);
+    setFileInputs(newState);
   };
-
   return (
     <>
       <div {...getRootProps()}>
@@ -87,19 +70,21 @@ const UploadInput = ({
         <p>[Drag and drop some files here, or click to select files]</p>
       </div>
       <ul>
-        {pictureSrcs.map((pictureSrc, index) => (
-          <li key={index}>
-            <img width="50px" src={pictureSrc} alt="uploaded" />
-            <Button
-              color="danger"
-              size="sm"
-              onClick={handleDeleteClick}
-              value={index}
-            >
-              X
-            </Button>
-          </li>
-        ))}
+        {fileInputsState
+          ? fileInputsState.map((pictureSrc, index) => (
+              <li key={pictureSrc.url}>
+                <img width="50px" src={pictureSrc.url} alt="uploaded" />
+                <Button
+                  color="danger"
+                  size="sm"
+                  onClick={handleDeleteClick}
+                  value={index}
+                >
+                  X
+                </Button>
+              </li>
+            ))
+          : null}
       </ul>
     </>
   );

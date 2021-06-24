@@ -14,7 +14,7 @@ import ReactDOM from 'react-dom';
 import firebase from 'firebase';
 import ProjectEntryForm from '../../components/forms/ProjectEntryForm';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
-import { getProjectEntry } from '../../firebase/repositories/ProjectEntryRepository';
+import { getProjectEntryRequest } from '../../firebase/repositories/ProjectEntryRepository';
 
 jest.mock('../../firebase/repositories/ProjectEntryRepository');
 
@@ -48,7 +48,7 @@ jest.mock('next/router', () => ({
 beforeEach(() => {});
 
 it('should display no existing projectEntry data if creating a new project entry', async () => {
-  (getProjectEntry as any).mockImplementation(getProjectEntryMock);
+  (getProjectEntryRequest as any).mockImplementation(getProjectEntryMock);
 
   act(() => {
     render(<ProjectEntryForm projectEntryId="" />);

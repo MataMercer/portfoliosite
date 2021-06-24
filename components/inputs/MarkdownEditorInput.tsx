@@ -28,7 +28,10 @@ export default function MarkdownEditorInput(props: MarkdownEditorInputProps) {
             />
           </FormGroup>
         </Col>
-        <Col>{text ? <ReactMarkdown>{text}</ReactMarkdown> : null}</Col>
+        <Col>
+          <Label>Markdown Preview</Label>
+          {text ? <ReactMarkdown>{text}</ReactMarkdown> : null}
+        </Col>
       </Row>
     </>
   );

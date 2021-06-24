@@ -1,34 +1,16 @@
-import { Row, Col, Modal, Container } from 'reactstrap';
-import firebase from 'firebase';
-import React, { useState, useEffect } from 'react';
-// eslint-disable-next-line no-unused-vars
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { Row, Col, Container } from 'reactstrap';
+import React from 'react';
 import { IProjectEntry } from '../ModelTypes/interfaces';
 import ProjectEntry from './ProjectEntry';
-import { getProjectEntries } from '../firebase/repositories/ProjectEntryRepository';
 import ErrorAlert from './ErrorAlert';
 import ProjectEntryThumbnail from './ProjectEntryThumbnail';
+import useProjectEntry from '../firebase/hooks/useProjectEntry';
 
 export default function ProjectEntryList() {
-  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
-  const [projectEntries, setProjectEntries] = useState<IProjectEntry[]>([]);
+  const { projectEntries, status, errors } = useProjectEntry({
+    initialLoad: true,
+  });
   const projectEntriesPerRow = 3;
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('loading');
-
-  useEffect(() => {
-    if (status === 'loading') {
-      getProjectEntries()
-        .then((res) => {
-          setProjectEntries(res);
-          setStatus('idle');
-        })
-        .catch((err) => {
-          setStatus('error');
-          setErrors([...errors, err]);
-        });
-    }
-  }, [errors, status]);
 
   return (
     <Container>
@@ -58,7 +40,7 @@ export default function ProjectEntryList() {
                       pictureUrls={projectEntry.pictureUrls}
                       updatedAt={projectEntry.updatedAt}
                     />
-                    <ProjectEntry projectEntry={projectEntry} />
+                    <ProjectEntry projectEntryLocal={projectEntry} />
                   </Col>
                 ))}
             </Row>

@@ -1,46 +1,22 @@
-// eslint-disable-next-line no-unused-vars
-import firebase from 'firebase';
 import { useCallback, useEffect, useState } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { RequestStatus } from '../../ModelTypes/RequestStatus';
 import {
   getAboutPageRequest,
   updateAboutPageRequest,
 } from '../repositories/AboutPageRepository';
+import useGenericRequest from './util/useGenericRequest';
 
 function useAboutPage() {
   const [aboutPage, setAboutPage] = useState<string>('');
-  const [status, setStatus] = useState<RequestStatus>('loading');
-  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
-
+  const { status, errors, callRequest } = useGenericRequest();
   useEffect(() => {
-    if (status === 'loading') {
-      getAboutPageRequest()
-        .then((res) => {
-          setAboutPage(res);
-          setStatus('succeeded');
-        })
-        .catch((err) => {
-          setStatus('error');
-          setErrors([...errors, err]);
-        });
-    }
-  }, [errors, status]);
+    callRequest(getAboutPageRequest()).then((res) => {
+      setAboutPage(res);
+    });
+  }, []);
 
-  const updateAboutPage = useCallback(
-    async (content: string) => {
-      setStatus('loading');
-      return updateAboutPageRequest(content)
-        .then(() => {
-          setStatus('succeeded');
-        })
-        .catch((err) => {
-          setErrors([...errors, err]);
-          setStatus('error');
-        });
-    },
-    [errors]
-  );
+  const updateAboutPage = useCallback((content: string) => {
+    return callRequest(updateAboutPageRequest(content));
+  }, []);
 
   return [aboutPage, updateAboutPage, status, errors] as const;
 }

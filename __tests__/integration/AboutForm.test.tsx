@@ -84,19 +84,19 @@ it('should update the about page in firebase with user input on submit', async (
   expect(screen.getByText('Save').getAttribute('disabled')).toBe(null);
 });
 
-// it('should display a firebase error if the about page data fails to load', async () => {
-//   (getAboutPageRequest as any).mockImplementation(getAboutPageMockReject);
+it('should display a firebase error if the about page data fails to load', async () => {
+  (getAboutPageRequest as any).mockImplementation(
+    getAboutPageRequestMockReject
+  );
 
-//   act(() => {
-//     render(<AboutForm />);
-//   });
-//   await waitFor(() => screen.getByLabelText(/About Page Content/i));
+  render(<AboutForm />);
+  await waitFor(() => screen.getByLabelText(/About Page Content/i));
 
-//   expect(await screen.findByText(MockError.message)).toBeInTheDocument();
-// });
+  expect(await screen.findByText(MockError.message)).toBeInTheDocument();
+});
 
 // it('should display a firebase error if the submission to Firebase fails', async () => {
-//   (updateAboutPageRequest as any).mockImplementation(updateAboutPageMockReject);
+//   (updateAboutPageRequest as any).mockImplementation(updateAboutPageRequestMockReject);
 
 //   act(() => {
 //     render(<AboutForm />);
@@ -112,7 +112,7 @@ it('should update the about page in firebase with user input on submit', async (
 //   );
 
 //   fireEvent.click(screen.getByText(/Save/));
-//   expect(updateAboutPageMockReject).toBeCalledWith(editedContent);
+//   expect(updateAboutPageRequestMockReject).toBeCalledWith(editedContent);
 //   await waitForElementToBeRemoved(() => screen.getByRole('status'));
 //   expect(screen.getByText('Save').getAttribute('disabled')).toBe(null);
 //   expect(await screen.findByText(MockError.message)).toBeInTheDocument();
