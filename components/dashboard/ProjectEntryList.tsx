@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, ListGroup } from 'reactstrap';
+import { Row, ListGroup, Spinner } from 'reactstrap';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import ProjectEntryListItem from './ProjectEntryListItem';
 import ErrorAlert from '../ErrorAlert';
@@ -22,6 +22,7 @@ export default function ProjectEntryList() {
       <Row>
         <ErrorAlert errors={errors} />
       </Row>
+      {status === 'loading' ? <Spinner /> : null}
       <ListGroup>
         {projectEntries.map((projectEntry) => (
           <ProjectEntryListItem

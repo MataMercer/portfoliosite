@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
 const ThemeToggler = () => {
-  const [theme, setTheme] = useState(true);
+  const [theme, setTheme] = useState(false);
 
   const handleChange = () => {
     setTheme(!theme);
