@@ -1,0 +1,27 @@
+.navbar-brand #circle {
+  fill: rgba($color: #000000, $alpha: 0) !important;
+}
+
+.navbar-brand:hover #hexagon-container path {
+  transform: rotate(180deg) !important;
+  transform-origin: center center;
+  transition: all 0.7s ease-in-out;
+}
+#hexagon-container path {
+  transform-origin: center center;
+}
+
+.navbar-brand:active {
+  #leftLine,
+  #rightLine {
+    stroke: colorValueMultiplier($primary, true, 4) !important;
+  }
+}
+
+.navbar-brand-image {
+  border-radius: 50%;
+  background-color: $primary;
+}
+.navbar-brand:active .navbar-brand-image {
+  background-color: rgba($color: #000000, $alpha: 0);
+}

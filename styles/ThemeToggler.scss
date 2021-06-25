@@ -1,16 +1,15 @@
 .theme-toggler {
-  background-color: $page-color-lighter-1;
+  background-color: colorValueMultiplier($page-color, false, 1);
   color: $black-color;
   transition: 0.3s;
   border-radius: 50%;
   padding: 0.3em 0.55em;
   border: none;
-  box-shadow: 5px 5px 25px 0 $page-color-darker-4;
+  box-shadow: 5px 5px 25px 0 colorValueMultiplier($page-color, true, 4);
 }
 
 .theme-toggler:hover {
-  background-color: $page-color-lighter-2;
-
-  box-shadow: 5px 5px 50px -10px $page-color-darker-4;
+  background-color: colorValueMultiplier($page-color, false, 2);
+  box-shadow: 5px 5px 50px -10px colorValueMultiplier($page-color, true, 4);
   color: $black-color;
 }

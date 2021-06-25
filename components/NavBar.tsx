@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../auth/auth';
 import ThemeToggler from './ThemeToggler';
+import { ReactSVG } from 'react-svg';
 
 const NavBar = () => {
   const router = useRouter();
@@ -14,12 +15,13 @@ const NavBar = () => {
     <header>
       <Link href="/">
         <div className="navbar-brand">
-          <img
+          <ReactSVG
             className="navbar-brand-image"
             src="/matamercerlogo2020.svg"
-            alt="Mercer Denholm Logo"
+            loading={() => <span>Loading</span>}
+            wrapper="div"
           />
-          <span className="navbar-brand-text">Mercer Denholm</span>
+          <div className="navbar-brand-text">Mercer Denholm</div>
         </div>
       </Link>
 

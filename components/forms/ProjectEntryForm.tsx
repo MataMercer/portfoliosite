@@ -26,7 +26,7 @@ type ProjectEntryFormData = {
 export default function ProjectEntryForm({
   projectEntryId,
 }: ProjectEntryFormProps) {
-  const { reset, setValue, getValues, control, handleSubmit } =
+  const { reset, setValue, control, handleSubmit } =
     useForm<ProjectEntryFormData>({
       criteriaMode: 'all',
     });
@@ -81,9 +81,7 @@ export default function ProjectEntryForm({
 
     const uploadPictures = async (picturesToUpload: File[]) => {
       return Promise.all(
-        picturesToUpload.map((picture: File) =>
-          uploadFile(picture).catch((error: firebase.FirebaseError) => error)
-        )
+        picturesToUpload.map((picture: File) => uploadFile(picture))
       );
     };
 
@@ -125,25 +123,21 @@ export default function ProjectEntryForm({
         .map((file) => file.url);
 
       if (projectEntryId && fetchedProjectEntry) {
-        console.log(data.projectEntryForm.pictureUrls);
-        updateProjectEntry({
+        await updateProjectEntry({
           ...data.projectEntryForm,
           tags: convertReactTagsToFirebaseObject(),
           pictureUrls: [...fileUrlsToKeep, ...successUploadedPictureUrls],
           updatedAt: timestamp() as firebase.firestore.Timestamp,
-        }).then(() => {
-          Router.push('/admindashboard');
         });
       } else {
-        createProjectEntry({
+        await createProjectEntry({
           ...data.projectEntryForm,
           tags: convertReactTagsToFirebaseObject(),
           pictureUrls: successUploadedPictureUrls,
           updatedAt: timestamp() as firebase.firestore.Timestamp,
-        }).then(() => {
-          Router.push('/admindashboard');
         });
       }
+      Router.push('/admindashboard');
     };
     submit();
   };
@@ -156,9 +150,13 @@ export default function ProjectEntryForm({
   return (
     <>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <ErrorAlert errors={projectEntryErrors} />
-        <ErrorAlert errors={storageErrors} />
-        <ErrorAlert errors={tagSuggestionsErrors} />
+        <ErrorAlert
+          errors={[
+            ...projectEntryErrors,
+            ...storageErrors,
+            ...tagSuggestionsErrors,
+          ]}
+        />
         <FormGroup>
           <Label for="title">Title</Label>
           <Controller
@@ -202,42 +200,37 @@ export default function ProjectEntryForm({
         </FormGroup>
         <FormGroup>
           <Label for="tags">Tags</Label>
-          {!disabled ? (
-            <Controller
-              name="reactTags"
-              control={control}
-              defaultValue={[]}
-              render={({ field }) => (
-                <ReactTags
-                  id="tags"
-                  tags={field.value}
-                  handleAddition={(tag) => {
-                    setValue('reactTags', [...field.value, tag]);
-                  }}
-                  handleDelete={(i) => {
-                    setValue(
-                      'reactTags',
-                      field.value.filter((tag, index) => index !== i)
-                    );
-                    console.log(getValues('reactTags'));
-                  }}
-                  handleDrag={(tag, currPos, newPos) => {
-                    const newTags = field.value.slice();
-                    newTags.splice(currPos, 1);
-                    newTags.splice(newPos, 0, tag);
-                    setValue('reactTags', newTags);
-                  }}
-                  delimiters={delimiters}
-                  suggestions={tagSuggestions.map((tag) => ({
-                    id: tag,
-                    text: tag,
-                  }))}
-                />
-              )}
-            />
-          ) : (
-            <Spinner />
-          )}
+          <Controller
+            name="reactTags"
+            control={control}
+            defaultValue={[]}
+            render={({ field }) => (
+              <ReactTags
+                id="tags"
+                tags={field.value}
+                handleAddition={(tag) => {
+                  setValue('reactTags', [...field.value, tag]);
+                }}
+                handleDelete={(i) => {
+                  setValue(
+                    'reactTags',
+                    field.value.filter((tag, index) => index !== i)
+                  );
+                }}
+                handleDrag={(tag, currPos, newPos) => {
+                  const newTags = field.value.slice();
+                  newTags.splice(currPos, 1);
+                  newTags.splice(newPos, 0, tag);
+                  setValue('reactTags', newTags);
+                }}
+                delimiters={delimiters}
+                suggestions={tagSuggestions.map((tag) => ({
+                  id: tag,
+                  text: tag,
+                }))}
+              />
+            )}
+          />
         </FormGroup>
         <FormGroup>
           <Label for="introDescription">Intro Description</Label>

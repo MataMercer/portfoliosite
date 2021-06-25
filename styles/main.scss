@@ -1,30 +1,18 @@
 // @import "../node_modules/normalize.css/normalize.css";
-@import './BootstrapCustomVariables.scss';
+@import 'ColorPalette.scss';
 @import '../node_modules/bootstrap/scss/bootstrap';
-@import './BootstrapCustomStyling.scss';
+@import 'BootstrapCustomStyling.scss';
 @import '../node_modules/@fortawesome/fontawesome-svg-core/styles.css';
-@import './ThemeToggler.scss';
-@import './ReactTags.scss';
-// @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Recursive:wght@600&display=swap');
-
-@font-face {
-  font-family: 'Recursive';
-  src: url('../public/Recursive-SemiBold-CASL=0-CRSV=0-MONO=0-slnt=0.ttf')
-    format('truetype');
-}
-
-@font-face {
-  font-family: 'Open Sans';
-  src: url('../public/OpenSans-Regular.ttf') format('truetype');
-}
+@import 'ThemeToggler.scss';
+@import 'ReactTags.scss';
+@import 'Logo.scss';
+@import 'Fonts.scss';
+@import 'Navbar.scss';
 
 body {
   font-family: 'Open Sans', 'SF Pro Icons', 'Helvetica', 'Arial', sans-serif;
   font-size: larger;
   background-color: $page-color;
-  // padding: 20px 20px 60px;
-  // max-width: 680px;
-  // margin: 0 auto;
 }
 
 h1,
@@ -49,124 +37,6 @@ hr {
   max-width: 50em;
   margin: 0 auto;
   padding: 0.5em;
-}
-
-//   p{
-//     line-height: 1.2em;
-
-//   }
-
-//  nav{
-//   ul {
-//     list-style-type: none;
-//     margin: 0;
-//     padding: 0;
-//     overflow: hidden;
-//   }
-//  }
-
-//   .navbar-brand:hover{
-//     background-color: $primary-color;
-//     border-radius: 5em;
-//     color: white;
-//   }
-
-.navbar-brand-image {
-  width: 4em;
-}
-
-.navbar-brand-text {
-  font-family: 'Recursive', 'Noto serif', 'SF Pro Icons', 'Helvetica', 'Arial',
-    sans-serif;
-  vertical-align: middle;
-  font-size: 1.5em;
-  padding-left: 0.25em;
-  margin-bottom: 1em;
-}
-
-//   .navbar-items{
-//     float: right;
-//   }
-
-//   .navbar-item {
-//     display: block;
-//     text-align: center;
-//     text-decoration: none;
-//   }
-
-/* Change the link color to #111 (black) on hover */
-// li a:hover {
-//   background-color: $primary-color;
-//   border-radius: 1em;
-//   color: white;
-
-// }
-
-header {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  flex-wrap: wrap;
-  vertical-align: middle;
-}
-
-.navbar-items {
-  margin-bottom: 0px;
-  list-style: none;
-
-  vertical-align: middle;
-  li {
-    display: inline-block;
-    margin-right: 0.5em;
-    margin-left: 0.5em;
-    margin-bottom: 0.25em;
-    margin-top: 0.25em;
-    a {
-      border-radius: 3em;
-      padding: 3px 20px;
-      transition: all 0.3s ease 0s;
-    }
-  }
-
-  li:hover {
-    a {
-      background-color: $primary;
-      color: white;
-      text-decoration: none;
-      box-shadow: 5px 5px 20px -10px $primary;
-    }
-  }
-
-  .navbar-item-active {
-    a {
-      background-color: $primary;
-      color: white;
-      text-decoration: none;
-      box-shadow: 5px 5px 20px -10px $primary;
-    }
-  }
-}
-
-.navbar-brand {
-  cursor: pointer;
-  margin-right: auto;
-  padding-right: 1em;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  transition: all 0.3s ease 0s;
-  border-radius: 3em;
-}
-
-.navbar-brand:hover {
-  background-color: $primary;
-
-  box-shadow: 5px 5px 20px -10px $primary;
-  color: white;
-}
-
-nav {
-  order: 1;
-  vertical-align: middle;
 }
 
 article {
@@ -206,12 +76,12 @@ article {
   color: black;
   margin-top: 1em;
   margin-bottom: 1em;
-  background-color: $page-color-lighter-1;
+  background-color: colorValueMultiplier($page-color, false, 1);
   border-radius: 2em;
   transition: all 0.3s ease 0s;
   font-size: medium;
   padding: 1.5em;
-  box-shadow: 5px 5px 25px 0 $page-color-darker-4;
+  box-shadow: 5px 5px 25px 0 colorValueMultiplier($page-color, true, 4);
   .project-entry-text {
     padding-top: 1.5em;
   }
@@ -224,8 +94,8 @@ article {
 }
 
 .project-entry:hover {
-  background-color: $page-color-lighter-2;
-  box-shadow: 5px 5px 50px -10px $page-color-darker-4;
+  background-color: colorValueMultiplier($page-color, false, 2);
+  box-shadow: 5px 5px 50px -10px colorValueMultiplier($page-color, true, 4);
   transform: scale(1.02);
   img {
     filter: brightness(95%);
@@ -363,50 +233,41 @@ body.dark-theme {
     }
   }
 
-  input {
-    background-color: $black-color-lighter-1;
-    color: $page-color;
-  }
-  select {
-    background-color: $black-color-lighter-1;
-    color: $page-color;
-  }
+  input,
+  select,
   textarea {
-    background-color: $black-color-lighter-1;
-    border: none;
+    background-color: colorValueMultiplier($black-color, false, 1);
     color: $page-color;
+    border: none;
   }
   textarea:focus {
-    background-color: $black-color-lighter-1;
+    background-color: colorValueMultiplier($black-color, false, 1);
     color: $page-color;
   }
   input:focus {
-    background-color: $black-color-lighter-1;
+    background-color: colorValueMultiplier($black-color, false, 1);
     color: $page-color;
-  }
-  input {
-    border: none;
   }
 
   .theme-toggler {
-    box-shadow: 5px 5px 25px 0 $black-color-darker-1;
-    background-color: $black-color-lighter-1;
+    box-shadow: 5px 5px 25px 0 colorValueMultiplier($black-color, true, 1);
+    background-color: colorValueMultiplier($black-color, false, 1);
     color: $page-color;
   }
 
   .theme-toggler:hover {
-    background-color: $black-color-lighter-2;
-    box-shadow: 5px 5px 50px -10px $black-color-darker-1;
+    background-color: colorValueMultiplier($black-color, false, 2);
+    box-shadow: 5px 5px 50px -10px colorValueMultiplier($black-color, true, 1);
   }
 
   .project-entry {
-    background-color: $black-color-lighter-1;
-    box-shadow: 5px 5px 25px 0 $black-color-darker-1;
+    background-color: colorValueMultiplier($black-color, false, 1);
+    box-shadow: 5px 5px 25px 0 colorValueMultiplier($black-color, true, 1);
     color: $page-color;
   }
   .project-entry:hover {
-    background-color: $black-color-lighter-2;
-    box-shadow: 5px 5px 50px -10px $black-color-darker-1;
+    background-color: colorValueMultiplier($black-color, false, 2);
+    box-shadow: 5px 5px 50px -10px colorValueMultiplier($black-color, true, 1);
     img {
       filter: brightness(105%);
     }
@@ -446,19 +307,19 @@ body.dark-theme {
     border: none;
   }
   .card {
-    background-color: $black-color-darker-1;
+    background-color: colorValueMultiplier($black-color, true, 1);
   }
   .list-group-item {
     background-color: $black-color;
   }
 
   .react-loading-skeleton {
-    background-color: $black-color-lighter-1;
+    background-color: colorValueMultiplier($black-color, false, 1);
     background-image: linear-gradient(
       90deg,
-      $black-color-lighter-1,
-      $black-color-lighter-2,
-      $black-color-lighter-1
+      colorValueMultiplier($black-color, false, 1),
+      colorValueMultiplier($black-color, false, 2),
+      colorValueMultiplier($black-color, false, 1)
     );
   }
 }

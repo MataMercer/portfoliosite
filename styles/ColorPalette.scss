@@ -1,0 +1,20 @@
+$primary: #4545b6;
+$secondary: #6b6b6b;
+$success: #209e6a;
+$warning: #dab616;
+
+$page-color: #f8f8f8;
+$black-color: #232327;
+
+$defaultValueMultiplier: 4;
+
+@function colorValueMultiplier($color, $isDarken, $multiplicand) {
+  @if $isDarken == true {
+    @return darken($color, $multiplicand * $defaultValueMultiplier);
+  }
+  @if $isDarken == false {
+    @return lighten($color, $multiplicand * $defaultValueMultiplier);
+  }
+}
+
+$info: colorValueMultiplier($black-color, false, 3);

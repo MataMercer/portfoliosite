@@ -63,7 +63,7 @@ body.dark-theme {
   /* Styles for selected tags */
   div.ReactTags__selected span.ReactTags__tag {
     border: none;
-    background: $black-color-lighter-3;
+    background: colorValueMultiplier($black-color, false, 3);
   }
   div.ReactTags__selected a.ReactTags__remove {
     color: #aaa;
