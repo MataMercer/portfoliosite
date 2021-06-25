@@ -5,6 +5,7 @@ import ProjectEntry from './ProjectEntry';
 import ErrorAlert from './ErrorAlert';
 import ProjectEntryThumbnail from './ProjectEntryThumbnail';
 import useProjectEntry from '../firebase/hooks/useProjectEntry';
+import CenterSpinner from './CenterSpinner';
 
 export default function ProjectEntryList() {
   const { projectEntries, status, errors } = useProjectEntry({
@@ -15,8 +16,9 @@ export default function ProjectEntryList() {
   return (
     <Container>
       <Row>
-        <ErrorAlert errors={errors} />
+        <ErrorAlert {...{ errors }} />
       </Row>
+      <CenterSpinner {...{ status }} />
 
       {projectEntries.map((projectEntryRow, index) => {
         if (index % projectEntriesPerRow === 0) {

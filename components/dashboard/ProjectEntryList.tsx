@@ -5,6 +5,7 @@ import ProjectEntryListItem from './ProjectEntryListItem';
 import ErrorAlert from '../ErrorAlert';
 import useProjectEntries from '../../firebase/hooks/useProjectEntry';
 import useStorage from '../../firebase/hooks/useStorage';
+import CenterSpinner from '../CenterSpinner';
 export default function ProjectEntryList() {
   const { projectEntries, deleteProjectEntry, status, errors } =
     useProjectEntries({ initialLoad: true });
@@ -22,7 +23,7 @@ export default function ProjectEntryList() {
       <Row>
         <ErrorAlert errors={errors} />
       </Row>
-      {status === 'loading' ? <Spinner /> : null}
+      <CenterSpinner {...{ status }} />
       <ListGroup>
         {projectEntries.map((projectEntry) => (
           <ProjectEntryListItem
