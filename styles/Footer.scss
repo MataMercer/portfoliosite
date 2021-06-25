@@ -1,0 +1,18 @@
+footer {
+  background-color: $primary;
+  color: white;
+  box-shadow: 0 100vh 0 100vh $primary;
+  ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding-left: 0px;
+    li {
+      margin: 1em;
+      a {
+        color: white;
+      }
+    }
+  }
+  text-align: center;
+}
