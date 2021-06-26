@@ -21,6 +21,6 @@ function useAboutPage() {
     [callRequest]
   );
 
-  return [aboutPage, updateAboutPage, status, errors] as const;
+  return { aboutPage, updateAboutPage, status, errors };
 }
 export default useAboutPage;

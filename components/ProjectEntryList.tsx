@@ -1,5 +1,4 @@
 import { Row, Col, Container } from 'reactstrap';
-import React from 'react';
 import { IProjectEntry } from '../ModelTypes/interfaces';
 import ProjectEntry from './ProjectEntry';
 import ErrorAlert from './ErrorAlert';

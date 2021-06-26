@@ -16,17 +16,15 @@ const ProjectEntryListItem = ({
 }: ProjectEntryListItemProps) => {
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
-  const handleTrashcanButtonClick = (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleTrashcanButtonClick = () => {
     setShowDeleteWarning(true);
   };
 
-  const handleCancelButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleCancelButtonClick = () => {
     setShowDeleteWarning(false);
   };
 
-  const handleDeleteButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleDeleteButtonClick = () => {
     setShowDeleteWarning(false);
     deleteProjectEntryAndCleanUpFiles(projectEntry);
   };

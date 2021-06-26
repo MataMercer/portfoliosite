@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Modal,
@@ -47,7 +47,13 @@ const ProjectEntry = ({
     if (setPageTitle && projectEntryState) {
       setPageTitle(projectEntryState.title);
     }
-  }, [projectEntryId, fetchedProjectEntry]);
+  }, [
+    projectEntryId,
+    fetchedProjectEntry,
+    projectEntryLocal,
+    setPageTitle,
+    projectEntryState,
+  ]);
 
   const Carousel = () => (
     <ThumbnailCarousel

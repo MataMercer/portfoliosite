@@ -1,11 +1,12 @@
 import React from 'react';
-import { Row, ListGroup, Spinner } from 'reactstrap';
+import { Row, ListGroup } from 'reactstrap';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import ProjectEntryListItem from './ProjectEntryListItem';
 import ErrorAlert from '../ErrorAlert';
 import useProjectEntries from '../../firebase/hooks/useProjectEntry';
 import useStorage from '../../firebase/hooks/useStorage';
 import CenterSpinner from '../CenterSpinner';
+
 export default function ProjectEntryList() {
   const { projectEntries, deleteProjectEntry, status, errors } =
     useProjectEntries({ initialLoad: true });

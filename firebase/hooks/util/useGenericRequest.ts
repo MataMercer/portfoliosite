@@ -1,5 +1,6 @@
+/* eslint-disable no-console */
 import firebase from 'firebase';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { RequestStatus } from '../../../ModelTypes/RequestStatus';
 
 function useGenericRequest() {

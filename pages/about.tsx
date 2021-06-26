@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import Skeleton from 'react-loading-skeleton';
 import Layout from '../components/Layout';
@@ -6,7 +5,7 @@ import useAboutPage from '../firebase/hooks/useAboutPage';
 import ErrorAlert from '../components/ErrorAlert';
 
 export default function About() {
-  const [aboutPage, updateAboutPage, status, errors] = useAboutPage();
+  const { aboutPage, status, errors } = useAboutPage();
   return (
     <div>
       <Layout title="About">

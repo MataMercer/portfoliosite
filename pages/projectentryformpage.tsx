@@ -1,4 +1,3 @@
-import React from 'react';
 import ProtectRoute from '../auth/ProtectRoute';
 import Layout from '../components/Layout';
 import ProjectEntryForm from '../components/forms/ProjectEntryForm';

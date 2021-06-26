@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { MouseEvent, useState, useCallback, useEffect } from 'react';
+import { MouseEvent, useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from 'reactstrap';
 
@@ -57,7 +57,7 @@ const UploadInput = ({ id, fileInputs, setFileInputs }: UploadInputProps) => {
   const handleDeleteClick = (e: MouseEvent<HTMLButtonElement>) => {
     const indexToDelete = (e.target as HTMLInputElement).value.toString();
     const newState = fileInputsState.filter(
-      (fileInputs, i) => i !== parseInt(indexToDelete, 10)
+      (inputs, i) => i !== parseInt(indexToDelete, 10)
     );
     setFileInputsState(newState);
     setFileInputs(newState);

@@ -3,13 +3,13 @@ import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
 import Router from 'next/router';
 import firebase from 'firebase';
 import { WithContext as ReactTags, Tag } from 'react-tag-input';
+import { useForm, Controller } from 'react-hook-form';
 import { timestamp } from '../../firebase/config';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
 import UploadInput, { FileInput } from '../inputs/UploadInput';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import ErrorAlert from '../ErrorAlert';
 import useStorage from '../../firebase/hooks/useStorage';
-import { useForm, Controller } from 'react-hook-form';
 import useProjectEntry from '../../firebase/hooks/useProjectEntry';
 import useTags from '../../firebase/hooks/useTags';
 
@@ -74,10 +74,10 @@ export default function ProjectEntryForm({
         })),
       });
     }
-  }, [projectEntryId, fetchedProjectEntry]);
+  }, [projectEntryId, fetchedProjectEntry, reset]);
 
   const onSubmit = (data: ProjectEntryFormData) => {
-    const pictureFiles = data.pictureFiles;
+    const { pictureFiles } = data;
 
     const uploadPictures = async (picturesToUpload: File[]) => {
       return Promise.all(
@@ -162,7 +162,7 @@ export default function ProjectEntryForm({
           <Controller
             name="projectEntryForm.title"
             control={control}
-            defaultValue={''}
+            defaultValue=""
             render={({ field }) => <Input type="text" {...field} />}
           />
         </FormGroup>
@@ -171,7 +171,7 @@ export default function ProjectEntryForm({
           <Controller
             name="projectEntryForm.repoLink"
             control={control}
-            defaultValue={''}
+            defaultValue=""
             render={({ field }) => <Input type="text" {...field} />}
           />
         </FormGroup>
@@ -180,7 +180,7 @@ export default function ProjectEntryForm({
           <Controller
             name="projectEntryForm.demoLink"
             control={control}
-            defaultValue={''}
+            defaultValue=""
             render={({ field }) => <Input type="text" {...field} />}
           />
         </FormGroup>
@@ -237,7 +237,7 @@ export default function ProjectEntryForm({
           <Controller
             name="projectEntryForm.introDescription"
             control={control}
-            defaultValue={''}
+            defaultValue=""
             render={({ field }) => <Input type="text" {...field} />}
           />
         </FormGroup>

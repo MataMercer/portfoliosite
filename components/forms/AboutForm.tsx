@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Button, Form, Spinner } from 'reactstrap';
 import Router from 'next/router';
 import { useForm, Controller } from 'react-hook-form';
@@ -11,7 +11,7 @@ type AboutFormData = {
 };
 
 export default function AboutForm() {
-  const [aboutPage, updateAboutPage, status, errors] = useAboutPage();
+  const { aboutPage, updateAboutPage, status, errors } = useAboutPage();
   const { setValue, control, handleSubmit } = useForm<AboutFormData>({
     criteriaMode: 'all',
   });

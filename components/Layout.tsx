@@ -3,7 +3,6 @@ import Head from 'next/head';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLinkedin, faGithub } from '@fortawesome/free-brands-svg-icons';
 import NavBar from './NavBar';
-import ThemeToggler from './ThemeToggler';
 
 type LayoutProps = {
   title: string;

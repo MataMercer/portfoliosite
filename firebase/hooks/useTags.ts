@@ -15,7 +15,7 @@ function useTags({ initialLoad }: UseProjectEntryProps) {
         setTags(res);
       });
     }
-  }, []);
+  }, [callRequest, initialLoad]);
 
   return { tags, status, errors };
 }
