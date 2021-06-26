@@ -1,0 +1,80 @@
+.project-entry-screenshot {
+  object-fit: scale-down;
+  width: 100%;
+  height: 80vh;
+}
+.project-entry-anchor:hover {
+  text-decoration: none;
+}
+.project-entry {
+  color: black;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background-color: colorValueMultiplier($page-color, false, 1);
+  border-radius: 2em;
+  transition: all 0.3s ease 0s;
+  font-size: medium;
+  padding: 1.5em;
+  box-shadow: 5px 5px 25px 0 colorValueMultiplier($page-color, true, 4);
+  .project-entry-text {
+    padding-top: 1.5em;
+  }
+  img {
+    transition: all 0.3s ease 0s;
+  }
+  h2 {
+    font-size: x-large;
+  }
+}
+
+.project-entry:hover {
+  background-color: colorValueMultiplier($page-color, false, 2);
+  box-shadow: 5px 5px 50px -10px colorValueMultiplier($page-color, true, 4);
+  transform: scale(1.02);
+  img {
+    filter: brightness(95%);
+  }
+  .project-entry-thumbnail-image-first {
+    opacity: 0;
+    display: none;
+  }
+
+  .project-entry-thumbnail-image-second {
+    object-fit: contain;
+    display: block;
+    opacity: 1;
+    height: 15em;
+  }
+}
+
+.project-entry-modal {
+  padding: 0;
+  border: none;
+  font-size: 0.75em;
+  ul {
+    margin-left: 0em;
+  }
+
+  .row {
+    margin: 0;
+  }
+}
+.project-entry-thumbnail-carousel-panel-modal {
+  background-color: #1e1e24;
+  padding: 0;
+}
+
+.project-entry-thumbnail-carousel-panel-no-modal {
+  background-color: #1e1e24;
+  padding: 0;
+}
+
+.project-entry-thumbnail-text-panel-modal {
+  padding: 0;
+}
+
+.project-entry-description {
+  margin-top: 1em;
+  overflow-y: scroll;
+  height: 60vh;
+}

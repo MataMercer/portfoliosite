@@ -85,7 +85,8 @@ const ProjectEntry = ({
   const Text = () => {
     if (status === 'loading' && !projectEntryLocal) {
       return <LoadingPlaceholder />;
-    } else if (projectEntryState) {
+    }
+    if (projectEntryState) {
       const {
         completionStatus,
         title,
@@ -149,9 +150,8 @@ const ProjectEntry = ({
           </Row>
         </>
       );
-    } else {
-      return <></>;
     }
+    return <></>;
   };
 
   return projectEntryId ? (

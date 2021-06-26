@@ -1,0 +1,20 @@
+.project-entry-logo {
+  max-width: 2em;
+}
+
+.project-entry-thumbnail-image {
+  object-fit: contain;
+  height: 15em;
+  width: 100%;
+}
+
+.project-entry-thumbnail-image-second {
+  object-fit: contain;
+  display: none;
+  width: 100%;
+  opacity: 0;
+}
+
+.project-entry-thumbnail-gif {
+  width: 100%;
+}

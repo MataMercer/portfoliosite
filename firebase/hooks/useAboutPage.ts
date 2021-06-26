@@ -12,11 +12,14 @@ function useAboutPage() {
     callRequest(getAboutPageRequest()).then((res) => {
       setAboutPage(res);
     });
-  }, []);
+  }, [callRequest]);
 
-  const updateAboutPage = useCallback((content: string) => {
-    return callRequest(updateAboutPageRequest(content));
-  }, []);
+  const updateAboutPage = useCallback(
+    (content: string) => {
+      return callRequest(updateAboutPageRequest(content));
+    },
+    [callRequest]
+  );
 
   return [aboutPage, updateAboutPage, status, errors] as const;
 }

@@ -8,13 +8,19 @@ import useGenericRequest from './util/useGenericRequest';
 function useStorage() {
   const { status, errors, callRequest } = useGenericRequest();
 
-  const deleteFile = useCallback((url: string) => {
-    return callRequest(deleteFileRequest(url));
-  }, []);
+  const deleteFile = useCallback(
+    (url: string) => {
+      return callRequest(deleteFileRequest(url));
+    },
+    [callRequest]
+  );
 
-  const uploadFile = useCallback((fileToUpload: File) => {
-    return callRequest(uploadFileRequest(fileToUpload));
-  }, []);
+  const uploadFile = useCallback(
+    (fileToUpload: File) => {
+      return callRequest(uploadFileRequest(fileToUpload));
+    },
+    [callRequest]
+  );
   return { uploadFile, deleteFile, status, errors };
 }
 

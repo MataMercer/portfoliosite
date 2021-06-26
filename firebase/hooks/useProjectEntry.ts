@@ -1,7 +1,5 @@
-import firebase from 'firebase';
 import { useCallback, useEffect, useState } from 'react';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
-import { RequestStatus } from '../../ModelTypes/RequestStatus';
 import {
   createProjectEntryRequest,
   deleteProjectEntryRequest,
@@ -29,7 +27,7 @@ function useProjectEntry({
         setProjectEntries(res);
       });
     }
-  }, []);
+  }, [callRequest, initialLoad, projectEntryId]);
 
   useEffect(() => {
     if (initialLoad && projectEntryId) {
@@ -37,20 +35,28 @@ function useProjectEntry({
         setProjectEntry(res);
       });
     }
-  }, [projectEntryId]);
+  }, [projectEntryId, initialLoad, callRequest]);
 
-  const createProjectEntry = useCallback((projectEntryData: IProjectEntry) => {
-    return callRequest(createProjectEntryRequest(projectEntryData));
-  }, []);
+  const createProjectEntry = useCallback(
+    (projectEntryData: IProjectEntry) => {
+      return callRequest(createProjectEntryRequest(projectEntryData));
+    },
+    [callRequest]
+  );
 
-  const updateProjectEntry = useCallback((projectEntryData: IProjectEntry) => {
-    console.log(projectEntryData);
-    return callRequest(updateProjectEntryRequest(projectEntryData));
-  }, []);
+  const updateProjectEntry = useCallback(
+    (projectEntryData: IProjectEntry) => {
+      return callRequest(updateProjectEntryRequest(projectEntryData));
+    },
+    [callRequest]
+  );
 
-  const deleteProjectEntry = useCallback((projectEntryId: string) => {
-    return callRequest(deleteProjectEntryRequest(projectEntryId));
-  }, []);
+  const deleteProjectEntry = useCallback(
+    (projectEntryToBeDeletedId: string) => {
+      return callRequest(deleteProjectEntryRequest(projectEntryToBeDeletedId));
+    },
+    [callRequest]
+  );
 
   return {
     projectEntries,
