@@ -28,6 +28,20 @@ export default function ProjectEntryForm({
   const { reset, setValue, control, handleSubmit } =
     useForm<ProjectEntryFormData>({
       criteriaMode: 'all',
+      defaultValues: {
+        tags: [],
+        pictureFiles: [],
+        projectEntryForm: {
+          title: 'Untitled',
+          completionStatus: 'completed',
+          introDescription: '',
+          description: '',
+          repoLink: '',
+          demoLink: '',
+          pictureUrls: [],
+          tags: {},
+        },
+      },
     });
 
   const {
@@ -188,40 +202,6 @@ export default function ProjectEntryForm({
           )}
         />
       </Form.Group>
-      {/* <Form.Group>
-        <Form.Label for="tags">Tags</Form.Label>
-        <Controller
-          name="reactTags"
-          control={control}
-          defaultValue={[]}
-          render={({ field }) => (
-            <ReactTags
-              id="tags"
-              tags={field.value}
-              handleAddition={(tag) => {
-                setValue('reactTags', [...field.value, tag]);
-              }}
-              handleDelete={(i) => {
-                setValue(
-                  'reactTags',
-                  field.value.filter((tag, index) => index !== i)
-                );
-              }}
-              handleDrag={(tag, currPos, newPos) => {
-                const newTags = field.value.slice();
-                newTags.splice(currPos, 1);
-                newTags.splice(newPos, 0, tag);
-                setValue('reactTags', newTags);
-              }}
-              delimiters={delimiters}
-              suggestions={tagSuggestions.map((tag) => ({
-                id: tag,
-                text: tag,
-              }))}
-            />
-          )}
-        />
-      </Form.Group> */}
       <Form.Group>
         <Form.Label for="tags">Tags</Form.Label>
         <Controller

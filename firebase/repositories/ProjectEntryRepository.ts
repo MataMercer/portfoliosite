@@ -31,7 +31,7 @@ const getProjectEntriesRequest = async () => {
 };
 
 const createProjectEntryRequest = (projectEntryData: IProjectEntry) => {
-  const projectEntriesRef = doc(db, 'projectentries');
+  const projectEntriesRef = doc(collection(db, 'projectentries'));
 
   const batch = writeBatch(db);
 
