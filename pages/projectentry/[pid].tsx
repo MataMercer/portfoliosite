@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Layout from '../../components/Layout';
 import ProjectEntry from '../../components/ProjectEntry';
 
-const ProjectEntryPage = () => {
+function ProjectEntryPage() {
   const router = useRouter();
   const { pid } = router.query;
 
@@ -13,6 +13,6 @@ const ProjectEntryPage = () => {
       <ProjectEntry projectEntryId={pid as string} setPageTitle={setTitle} />
     </Layout>
   );
-};
+}
 
 export default ProjectEntryPage;

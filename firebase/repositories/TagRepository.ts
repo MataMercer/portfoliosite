@@ -1,9 +1,10 @@
+import { collection, query, getDocs } from 'firebase/firestore/lite';
 import { db } from '../config';
 
 const getAllTags = async () => {
-  const querySnapshot = await db.collection('tags').get();
+  const querySnapshot = await getDocs(query(collection(db, 'tags')));
   let tempTags: string[] = [];
-  querySnapshot.forEach((doc) => {
+  querySnapshot.docs.forEach((doc) => {
     if (doc.data().name) {
       tempTags = [...tempTags, doc.data().name];
     }

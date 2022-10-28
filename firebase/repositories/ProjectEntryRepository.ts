@@ -1,29 +1,39 @@
+import {
+  collection,
+  getDoc,
+  getDocs,
+  doc,
+  query,
+  orderBy,
+  writeBatch,
+  Transaction,
+  runTransaction,
+  where,
+} from 'firebase/firestore/lite';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import { db } from '../config';
 
 const getProjectEntryRequest = async (projectEntryId: string) => {
-  const doc = await db.collection('projectentries').doc(projectEntryId).get();
-  if (doc.exists && doc) {
-    return { ...doc.data(), id: doc.id } as IProjectEntry;
+  const d = await getDoc(doc(db, 'projectentries', projectEntryId));
+  if (d.exists()) {
+    return { ...d.data(), id: d.id } as IProjectEntry;
   }
   return null;
 };
+
 const getProjectEntriesRequest = async () => {
-  const querySnapshot = (
-    await db
-      .collection('projectentries')
-      .orderBy('updatedAt', 'desc')
-      .get({ source: 'server' })
-  ).docs;
-  return querySnapshot.map((doc) => {
-    return { ...doc.data(), id: doc.id } as IProjectEntry;
+  const querySnapshot = await getDocs(
+    query(collection(db, 'projectentries'), orderBy('updatedAt', 'desc'))
+  );
+  return querySnapshot.docs.map((it) => {
+    return { ...it.data(), id: it.id } as IProjectEntry;
   });
 };
 
 const createProjectEntryRequest = (projectEntryData: IProjectEntry) => {
-  const projectEntriesRef = db.collection('projectentries').doc();
+  const projectEntriesRef = doc(db, 'projectentries');
 
-  const batch = db.batch();
+  const batch = writeBatch(db);
 
   batch.set(projectEntriesRef, {
     title: projectEntryData.title,
@@ -38,7 +48,7 @@ const createProjectEntryRequest = (projectEntryData: IProjectEntry) => {
   });
 
   Object.keys(projectEntryData.tags).forEach((tag) => {
-    const tagsRef = db.collection('tags').doc(tag);
+    const tagsRef = doc(db, 'tags', tag);
     batch.set(
       tagsRef,
       {
@@ -54,11 +64,13 @@ const createProjectEntryRequest = (projectEntryData: IProjectEntry) => {
 
 // todo merge create and update.
 const updateProjectEntryRequest = async (projectEntryData: IProjectEntry) => {
-  const projectEntryRef = db
-    .collection('projectentries')
-    .doc(projectEntryData.id);
+  const projectEntryRef = doc(
+    db,
+    'projectentries',
+    projectEntryData.id as string
+  );
 
-  db.runTransaction(async (transaction) => {
+  runTransaction(db, async (transaction: Transaction) => {
     // READS
     const projectEntryDoc = await transaction.get(projectEntryRef);
 
@@ -69,8 +81,8 @@ const updateProjectEntryRequest = async (projectEntryData: IProjectEntry) => {
       (existingTag) => !(existingTag in projectEntryData.tags)
     );
     const unrelatedTagDocs = await Promise.all(
-      unrelatedTags.map((tag) => {
-        return transaction.get(db.collection('tags').doc(tag));
+      unrelatedTags.map((it) => {
+        return transaction.get(doc(db, 'tags', it));
       })
     );
 
@@ -101,11 +113,11 @@ const updateProjectEntryRequest = async (projectEntryData: IProjectEntry) => {
       }
     });
 
-    Object.keys(projectEntryData.tags).forEach((tag) => {
-      const tagsRef = db.collection('tags').doc(tag);
+    Object.keys(projectEntryData.tags).forEach((it) => {
+      const tagsRef = doc(db, 'tags', it);
       transaction.set(
         tagsRef,
-        { name: tag, projectEntries: { [projectEntryRef.id]: true } },
+        { name: it, projectEntries: { [projectEntryRef.id]: true } },
         { merge: true }
       );
     });
@@ -113,17 +125,17 @@ const updateProjectEntryRequest = async (projectEntryData: IProjectEntry) => {
 };
 
 const deleteProjectEntryRequest = async (idToDelete: string) => {
-  const projectEntryRef = db?.collection('projectentries').doc(idToDelete);
+  const projectEntryRef = doc(db, 'projectentries', idToDelete);
 
-  const tags = db.collection('tags');
-  const queryTagsForOrphans = tags.where('projectEntries', '==', {
+  const tags = collection(db, 'tags');
+  const queryTagsForOrphans = where('projectEntries', '==', {
     [idToDelete]: true,
   });
 
-  const batch = db.batch();
-  const orphanedTags = await queryTagsForOrphans.get();
-  orphanedTags.forEach((doc) => {
-    batch.delete(doc.ref);
+  const batch = writeBatch(db);
+  const orphanedTags = await getDocs(query(tags, queryTagsForOrphans));
+  orphanedTags.forEach((it) => {
+    batch.delete(it.ref);
   });
 
   batch.delete(projectEntryRef);

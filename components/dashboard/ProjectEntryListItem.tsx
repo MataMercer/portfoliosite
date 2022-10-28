@@ -1,8 +1,8 @@
-import React, { MouseEvent, useState } from 'react';
-import { ListGroupItem, Row, Col, Button } from 'reactstrap';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Button, Col, ListGroupItem, Row } from 'react-bootstrap';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 
 type ProjectEntryListItemProps = {
@@ -10,10 +10,10 @@ type ProjectEntryListItemProps = {
   deleteProjectEntryAndCleanUpFiles: (projectEntry: IProjectEntry) => void;
 };
 
-const ProjectEntryListItem = ({
+function ProjectEntryListItem({
   projectEntry,
   deleteProjectEntryAndCleanUpFiles,
-}: ProjectEntryListItemProps) => {
+}: ProjectEntryListItemProps) {
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   const handleTrashcanButtonClick = () => {
@@ -82,6 +82,6 @@ const ProjectEntryListItem = ({
       </Row>
     </ListGroupItem>
   );
-};
+}
 
 export default ProjectEntryListItem;

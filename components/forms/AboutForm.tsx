@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { Button, Form, Spinner } from 'reactstrap';
+import React, { useEffect } from 'react';
 import Router from 'next/router';
 import { useForm, Controller } from 'react-hook-form';
+import { Button, Form, Spinner } from 'react-bootstrap';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
 import useAboutPage from '../../firebase/hooks/useAboutPage';
 import ErrorAlert from '../ErrorAlert';
@@ -27,27 +27,25 @@ export default function AboutForm() {
   });
 
   return (
-    <>
-      <Form onSubmit={onSubmit}>
-        <ErrorAlert errors={errors} />
-        <Controller
-          name="aboutPageInput"
-          control={control}
-          defaultValue={aboutPage}
-          render={({ field }) => (
-            <MarkdownEditorInput
-              label="About Page Content"
-              id="aboutPageInput"
-              text={field.value}
-              handleTextChange={field.onChange}
-            />
-          )}
-        />
-        <Button color="primary" type="submit" disabled={status === 'loading'}>
-          Save
-        </Button>
-        {status === 'loading' ? <Spinner /> : null}
-      </Form>
-    </>
+    <Form onSubmit={onSubmit}>
+      <ErrorAlert errors={errors} />
+      <Controller
+        name="aboutPageInput"
+        control={control}
+        defaultValue={aboutPage}
+        render={({ field }) => (
+          <MarkdownEditorInput
+            label="About Page Content"
+            id="aboutPageInput"
+            text={field.value}
+            handleTextChange={field.onChange}
+          />
+        )}
+      />
+      <Button color="primary" type="submit" disabled={status === 'loading'}>
+        Save
+      </Button>
+      {status === 'loading' ? <Spinner animation="border" /> : null}
+    </Form>
   );
 }

@@ -1,23 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react';
-import {
-  Container,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Row,
-  Col,
-  Badge,
-} from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import Image from 'next/image';
+import { Badge, Col, Container, Row } from 'react-bootstrap';
 import { IProjectEntry } from '../ModelTypes/interfaces';
 import CompletionStatusBadge from './CompletionStatusBadge';
 
-const ProjectEntryThumbnail = (props: IProjectEntry) => {
+function ProjectEntryThumbnail(props: IProjectEntry) {
   const {
     id,
     title,
@@ -27,14 +15,6 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
     tags,
     completionStatus,
   } = props;
-
-  const ImageShowSecondPictureOnHover = ({ pictureSrc, altText }: any) => {
-    return (
-      <div>
-        <img src={pictureSrc} alt={altText} />
-      </div>
-    );
-  };
 
   return (
     <Link
@@ -46,24 +26,30 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
         <Container className="project-entry" color="primary" fluid="xs">
           <Row>
             <Col>
-              <img
-                className={`project-entry-thumbnail-image ${
-                  pictureUrls.length > 1
-                    ? 'project-entry-thumbnail-image-first'
-                    : ''
-                }`}
-                src={pictureUrls.length > 0 ? pictureUrls[0] : '/no-image.png'}
-                alt="ProjectEntryThumbnail"
-              />
-              {pictureUrls.length > 1 ? (
-                <img
-                  className="project-entry-thumbnail-image-second"
+              <div className="project-entry-thumbnail-image-wrapper">
+                <Image
+                  className={`project-entry-thumbnail-image ${
+                    pictureUrls.length > 1
+                      ? 'project-entry-thumbnail-image-first'
+                      : ''
+                  }`}
                   src={
-                    pictureUrls.length > 1 ? pictureUrls[1] : '/no-image.png'
+                    pictureUrls.length > 0 ? pictureUrls[0] : '/no-image.png'
                   }
+                  layout="fill"
                   alt="ProjectEntryThumbnail"
                 />
-              ) : null}
+                {pictureUrls.length > 1 && (
+                  <Image
+                    className="project-entry-thumbnail-image-second"
+                    src={
+                      pictureUrls.length > 1 ? pictureUrls[1] : '/no-image.png'
+                    }
+                    alt="ProjectEntryThumbnail"
+                    layout="fill"
+                  />
+                )}
+              </div>
             </Col>
           </Row>
           <div className="project-entry-text">
@@ -83,7 +69,7 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
                 <Col>
                   <CompletionStatusBadge completionStatus={completionStatus} />
                   {Object.keys(tags).map((tag) => (
-                    <Badge key={tag} color="info">
+                    <Badge key={tag} bg="info">
                       {tag}
                     </Badge>
                   ))}
@@ -95,6 +81,6 @@ const ProjectEntryThumbnail = (props: IProjectEntry) => {
       </a>
     </Link>
   );
-};
+}
 
 export default ProjectEntryThumbnail;

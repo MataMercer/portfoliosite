@@ -1,7 +1,7 @@
-import firebase from 'firebase/app';
-import 'firebase/storage';
-import 'firebase/firestore';
-import 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore/lite';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig =
   process.env.NODE_ENV === 'development'
@@ -25,12 +25,9 @@ const firebaseConfig =
         appId: '1:998401383563:web:6b2b4b9b8b903f3aed088e',
         measurementId: 'G-P7QHK2Q8CC',
       };
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-const storage = firebase.storage();
-const db = firebase.firestore();
-const auth = firebase.auth();
-const timestamp = firebase.firestore.FieldValue.serverTimestamp;
+const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-export { storage, db, auth, timestamp };
+export { auth, db, storage };

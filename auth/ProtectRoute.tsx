@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
+import { FC, ReactNode, useEffect } from 'react';
 import Router from 'next/router';
 import { useAuth } from './auth';
 
 type ProtectRouteProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
-export default function ProtectRoute(
-  Component: any
-): React.FC<ProtectRouteProps> {
-  return (...args) => {
+export default function ProtectRoute(Component: any): FC<ProtectRouteProps> {
+  return function (...args) {
     const { isAuthenticated, loading } = useAuth();
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Form, Button } from 'react-bootstrap';
 import Layout from '../components/Layout';
 
 export default function Contact() {
@@ -13,19 +13,19 @@ export default function Contact() {
         </p>
 
         <Form action="https://formspree.io/xvowlgvo" method="POST">
-          <FormGroup>
-            <Label for="name">Name</Label>
-            <Input type="text" name="name" id="name" />
-          </FormGroup>
+          <Form.Group>
+            <Form.Label for="name">Name</Form.Label>
+            <Form.Control type="text" name="name" id="name" />
+          </Form.Group>
 
-          <FormGroup>
-            <Label for="email">Email</Label>
-            <Input type="email" name="_replyto" id="email" />
-          </FormGroup>
-          <FormGroup>
-            <Label for="exampleText">Message</Label>
-            <Input rows={10} type="textarea" name="message" id="message" />
-          </FormGroup>
+          <Form.Group>
+            <Form.Label for="email">Email</Form.Label>
+            <Form.Control type="email" name="_replyto" id="email" />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label for="exampleText">Message</Form.Label>
+            <Form.Control type="textarea" name="message" id="message" />
+          </Form.Group>
           <Button color="primary" type="submit">
             Send
           </Button>

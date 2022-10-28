@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, ListGroup } from 'reactstrap';
+import { Row, ListGroup } from 'react-bootstrap';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import ProjectEntryListItem from './ProjectEntryListItem';
 import ErrorAlert from '../ErrorAlert';

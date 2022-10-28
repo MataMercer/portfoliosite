@@ -12,9 +12,7 @@ export default function About() {
         <h1>About</h1>
         <ErrorAlert errors={errors} />
         {status === 'loading' ? (
-          <>
-            <Skeleton count={6} />
-          </>
+          <Skeleton count={6} />
         ) : (
           <ReactMarkdown>{aboutPage}</ReactMarkdown>
         )}

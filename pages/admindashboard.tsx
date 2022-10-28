@@ -1,30 +1,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import {
-  Button,
-  Input,
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
-  Card,
-  CardTitle,
-  Row,
-  Col,
-} from 'reactstrap';
 import classNames from 'classnames';
+import { Nav, Row, Col, Card, Button, Tabs, Tab } from 'react-bootstrap';
 import Layout from '../components/Layout';
 import ProtectRoute from '../auth/ProtectRoute';
 import ProjectEntryList from '../components/dashboard/ProjectEntryList';
 
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<string>('1');
-
-  const toggle = (tab: string) => {
-    if (activeTab !== tab) setActiveTab(tab);
-  };
-
   return (
     <div>
       <Layout title="Admin Dashboard">
@@ -33,38 +16,15 @@ function AdminDashboard() {
         </section>
 
         <div>
-          <Nav tabs>
-            <NavItem>
-              <NavLink
-                className={classNames({
-                  active: activeTab === '1',
-                })}
-                onClick={() => {
-                  toggle('1');
-                }}
-              >
-                Project Entries
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                className={classNames({
-                  active: activeTab === '2',
-                })}
-                onClick={() => {
-                  toggle('2');
-                }}
-              >
-                About Page
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <TabContent activeTab={activeTab}>
-            <TabPane tabId="1">
+          <Tabs
+            activeKey={activeTab}
+            onSelect={(it) => setActiveTab(it || '1')}
+          >
+            <Tab eventKey="1" title="Project Entries">
               <Row>
                 <Col sm="12">
                   <Card body>
-                    <CardTitle>Manage Project Entries</CardTitle>
+                    <Card.Title>Manage Project Entries</Card.Title>
                     <Link href="/projectentryformpage">
                       <a>
                         <Button>Add New Project Entry</Button>
@@ -75,12 +35,12 @@ function AdminDashboard() {
                   </Card>
                 </Col>
               </Row>
-            </TabPane>
-            <TabPane tabId="2">
+            </Tab>
+            <Tab eventKey="2" title="About Page">
               <Row>
                 <Col sm="12">
                   <Card body>
-                    <CardTitle>Change About Page</CardTitle>
+                    <Card.Title>Change About Page</Card.Title>
 
                     <Link href="/aboutformpage">
                       <a>
@@ -90,8 +50,8 @@ function AdminDashboard() {
                   </Card>
                 </Col>
               </Row>
-            </TabPane>
-          </TabContent>
+            </Tab>
+          </Tabs>
         </div>
       </Layout>
     </div>

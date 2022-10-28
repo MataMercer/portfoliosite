@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import firebase from 'firebase';
+import { FirebaseError } from 'firebase/app';
 import { useCallback, useState } from 'react';
 import { RequestStatus } from '../../../ModelTypes/RequestStatus';
 
 function useGenericRequest() {
   const [status, setStatus] = useState<RequestStatus>('idle');
-  const [errors, setErrors] = useState<firebase.FirebaseError[]>([]);
+  const [errors, setErrors] = useState<FirebaseError[]>([]);
 
   const callRequest = useCallback(
     async (request: Promise<any>) => {

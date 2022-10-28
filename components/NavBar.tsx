@@ -6,7 +6,7 @@ import { ReactSVG } from 'react-svg';
 import { useAuth } from '../auth/auth';
 import ThemeToggler from './ThemeToggler';
 
-const AuthenticatedMenu = () => {
+function AuthenticatedMenu() {
   const { logout } = useAuth();
   const router = useRouter();
 
@@ -26,9 +26,9 @@ const AuthenticatedMenu = () => {
       </li>
     </ul>
   );
-};
+}
 
-const NavBar = () => {
+function NavBar() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
 
@@ -39,7 +39,6 @@ const NavBar = () => {
           <ReactSVG
             className="navbar-brand-image"
             src="/matamercerlogo2020.svg"
-            loading={() => <span>Loading</span>}
             wrapper="div"
           />
           <div className="navbar-brand-text">Mercer Denholm</div>
@@ -84,6 +83,6 @@ const NavBar = () => {
       </nav>
     </header>
   );
-};
+}
 
 export default NavBar;

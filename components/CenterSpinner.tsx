@@ -1,4 +1,4 @@
-import { Spinner } from 'reactstrap';
+import { Spinner } from 'react-bootstrap';
 import { RequestStatus } from '../ModelTypes/RequestStatus';
 
 type CenterSpinnerProps = {
@@ -7,7 +7,7 @@ type CenterSpinnerProps = {
 export default function CenterSpinner({ status }: CenterSpinnerProps) {
   return (
     <div className="center-spinner">
-      {status === 'loading' ? <Spinner /> : null}
+      {status === 'loading' && <Spinner animation="border" color="primary" />}
     </div>
   );
 }

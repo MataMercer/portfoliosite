@@ -1,6 +1,5 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-
 import {
   act,
   fireEvent,
@@ -11,7 +10,7 @@ import {
 } from '@testing-library/react';
 
 import ReactDOM from 'react-dom';
-import firebase from 'firebase';
+import { Timestamp } from 'firebase/firestore/lite';
 import ProjectEntryForm from '../../components/forms/ProjectEntryForm';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
 import { getProjectEntryRequest } from '../../firebase/repositories/ProjectEntryRepository';
@@ -28,7 +27,7 @@ const projectEntryMock: IProjectEntry = {
   pictureUrls: ['https://www.mocklink.com/', 'https://www.mocklink.com/'],
   completionStatus: 'completed',
   tags: { java: true, spring: true },
-  updatedAt: firebase.firestore.Timestamp.now(),
+  updatedAt: Timestamp.now(),
 };
 
 const getProjectEntryMock = jest.fn(

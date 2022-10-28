@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
 
-const ThemeToggler = () => {
+function ThemeToggler() {
   const [theme, setTheme] = useState(false);
 
   const handleChange = () => {
@@ -40,6 +40,6 @@ const ThemeToggler = () => {
       </button>
     </div>
   );
-};
+}
 
 export default ThemeToggler;

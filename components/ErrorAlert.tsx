@@ -1,11 +1,12 @@
-import { Alert } from 'reactstrap';
-import firebase from 'firebase';
+/* eslint-disable react/jsx-no-useless-fragment */
+import { FirebaseError } from 'firebase/app';
+import { Alert } from 'react-bootstrap';
 
 type ErrorAlertProps = {
-  errors: firebase.FirebaseError[];
+  errors: FirebaseError[];
 };
 
-const ErrorAlert = ({ errors }: ErrorAlertProps) => {
+function ErrorAlert({ errors }: ErrorAlertProps) {
   return (
     <>
       {errors.length > 0
@@ -18,6 +19,6 @@ const ErrorAlert = ({ errors }: ErrorAlertProps) => {
         : null}
     </>
   );
-};
+}
 
 export default ErrorAlert;

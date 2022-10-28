@@ -1,5 +1,9 @@
+import dynamic from 'next/dynamic';
 import Layout from '../components/Layout';
-import ProjectEntryList from '../components/ProjectEntryList';
+
+const DynamicProjectEntryList = dynamic(
+  () => import('../components/ProjectEntryList')
+);
 
 export default function Home() {
   return (
@@ -8,7 +12,7 @@ export default function Home() {
         <section>
           <h1>Project Gallery</h1>
           <p>Works done in my free time.</p>
-          <ProjectEntryList />
+          <DynamicProjectEntryList />
         </section>
       </Layout>
     </div>

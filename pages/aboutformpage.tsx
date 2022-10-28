@@ -3,7 +3,7 @@ import ProtectRoute from '../auth/ProtectRoute';
 import Layout from '../components/Layout';
 import AboutForm from '../components/forms/AboutForm';
 
-const AboutFormPage = () => {
+function AboutFormPage() {
   return (
     <div>
       <Layout title="Manage About Page">
@@ -12,6 +12,6 @@ const AboutFormPage = () => {
       </Layout>
     </div>
   );
-};
+}
 
 export default ProtectRoute(AboutFormPage);

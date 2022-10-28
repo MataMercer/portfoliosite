@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button, Row } from 'reactstrap';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Image from 'next/image';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 
 type ThumbnailCarouselProps = {
   pictureUrls: string[];
 };
 
-const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
+function ThumbnailCarousel({ pictureUrls }: ThumbnailCarouselProps) {
   const [index, setIndex] = useState<number>(0);
 
   const handleDirectionClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,44 +56,50 @@ const ThumbnailCarousel = ({ pictureUrls }: ThumbnailCarouselProps) => {
       </Row>
 
       <Row className="thumbnail-carousel-nav">
-        <Button
-          value="left"
-          disabled={index === 0}
-          onClick={handleDirectionClick}
-        >
-          <FontAwesomeIcon
-            icon={faAngleLeft}
-            style={{ pointerEvents: 'none' }}
-          />
-        </Button>
-        {pictureUrls.map((pictureUrl, i) => (
-          <button
-            // eslint-disable-next-line react/no-array-index-key
-            key={i}
-            className={`thumbnail-carousel-nav-item ${
-              i === index ? 'thumbnail-carousel-nav-item-active' : ''
-            }`}
-            type="button"
-            onClick={() => {
-              setIndex(i);
-            }}
+        <Col>
+          <Button
+            value="left"
+            disabled={index === 0}
+            onClick={handleDirectionClick}
           >
-            <img alt="thumbnail for selection" src={pictureUrl} />
-          </button>
+            <FontAwesomeIcon
+              icon={faAngleLeft}
+              style={{ pointerEvents: 'none' }}
+            />
+          </Button>
+        </Col>
+        {pictureUrls.map((pictureUrl, i) => (
+          <Col>
+            <button
+              // eslint-disable-next-line react/no-array-index-key
+              key={i}
+              className={`thumbnail-carousel-nav-item ${
+                i === index ? 'thumbnail-carousel-nav-item-active' : ''
+              }`}
+              type="button"
+              onClick={() => {
+                setIndex(i);
+              }}
+            >
+              <img alt="thumbnail for selection" src={pictureUrl} />
+            </button>
+          </Col>
         ))}
-        <Button
-          value="right"
-          disabled={index === pictureUrls.length - 1}
-          onClick={handleDirectionClick}
-        >
-          <FontAwesomeIcon
-            icon={faAngleRight}
-            style={{ pointerEvents: 'none' }}
-          />
-        </Button>
+        <Col>
+          <Button
+            value="right"
+            disabled={index === pictureUrls.length - 1}
+            onClick={handleDirectionClick}
+          >
+            <FontAwesomeIcon
+              icon={faAngleRight}
+              style={{ pointerEvents: 'none' }}
+            />
+          </Button>
+        </Col>
       </Row>
     </Container>
   );
-};
+}
 
 export default ThumbnailCarousel;

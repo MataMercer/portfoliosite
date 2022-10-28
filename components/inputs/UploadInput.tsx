@@ -1,7 +1,8 @@
 /* eslint-disable react/no-array-index-key */
+import Image from 'next/image';
 import { MouseEvent, useState, useCallback, useEffect } from 'react';
+import { Button } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
-import { Button } from 'reactstrap';
 
 export type FileInput = {
   data?: File;
@@ -14,7 +15,7 @@ type UploadInputProps = {
   setFileInputs: (pictures: FileInput[]) => void;
 };
 
-const UploadInput = ({ id, fileInputs, setFileInputs }: UploadInputProps) => {
+function UploadInput({ id, fileInputs, setFileInputs }: UploadInputProps) {
   const [fileInputsState, setFileInputsState] = useState<FileInput[]>([]);
 
   useEffect(() => {
@@ -73,7 +74,13 @@ const UploadInput = ({ id, fileInputs, setFileInputs }: UploadInputProps) => {
         {fileInputsState
           ? fileInputsState.map((pictureSrc, index) => (
               <li key={pictureSrc.url}>
-                <img width="50px" src={pictureSrc.url} alt="uploaded" />
+                <Image
+                  src={pictureSrc.url as string}
+                  alt="uploaded"
+                  layout="responsive"
+                  height={10}
+                  width={10}
+                />
                 <Button
                   color="danger"
                   size="sm"
@@ -88,6 +95,6 @@ const UploadInput = ({ id, fileInputs, setFileInputs }: UploadInputProps) => {
       </ul>
     </>
   );
-};
+}
 
 export default UploadInput;

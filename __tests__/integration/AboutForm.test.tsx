@@ -1,6 +1,6 @@
+/* eslint-disable no-promise-executor-return */
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-
 import {
   act,
   fireEvent,
@@ -11,7 +11,7 @@ import {
 } from '@testing-library/react';
 
 import ReactDOM from 'react-dom';
-import firebase from 'firebase';
+import { FirebaseError } from 'firebase/app';
 import AboutForm from '../../components/forms/AboutForm';
 import {
   getAboutPageRequest,
@@ -28,7 +28,7 @@ const updateAboutPageRequestMock = jest.fn(
   (content: string) => new Promise((resolve) => resolve(''))
 );
 
-const MockError: firebase.FirebaseError = {
+const MockError: FirebaseError = {
   code: '',
   message: 'rejected',
   name: '',

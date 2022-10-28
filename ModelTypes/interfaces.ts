@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import { Timestamp } from 'firebase/firestore/lite';
 
 export interface IProjectEntry {
   id?: string;
@@ -10,5 +10,5 @@ export interface IProjectEntry {
   demoLink: string;
   tags: { [name: string]: true };
   pictureUrls: string[];
-  updatedAt: firebase.firestore.Timestamp;
+  updatedAt: Timestamp;
 }

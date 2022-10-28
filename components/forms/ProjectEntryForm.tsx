@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
-import { Button, Form, FormGroup, Label, Input, Spinner } from 'reactstrap';
+import { useEffect } from 'react';
 import Router from 'next/router';
-import firebase from 'firebase';
-import { WithContext as ReactTags, Tag } from 'react-tag-input';
+import { TagsInput } from 'react-tag-input-component';
 import { useForm, Controller } from 'react-hook-form';
-import { timestamp } from '../../firebase/config';
+import { Timestamp } from 'firebase/firestore/lite';
+import { Button, Form, Spinner } from 'react-bootstrap';
 import MarkdownEditorInput from '../inputs/MarkdownEditorInput';
 import UploadInput, { FileInput } from '../inputs/UploadInput';
 import { IProjectEntry } from '../../ModelTypes/interfaces';
@@ -20,7 +19,7 @@ type ProjectEntryFormProps = {
 type ProjectEntryFormData = {
   projectEntryForm: IProjectEntry;
   pictureFiles: FileInput[];
-  reactTags: Tag[];
+  tags: string[];
 };
 
 export default function ProjectEntryForm({
@@ -68,10 +67,7 @@ export default function ProjectEntryForm({
       reset({
         projectEntryForm: fetchedProjectEntry,
         pictureFiles: fetchedProjectEntry.pictureUrls.map((url) => ({ url })),
-        reactTags: Object.keys(fetchedProjectEntry.tags).map((tagName) => ({
-          id: tagName,
-          text: tagName,
-        })),
+        tags: Object.keys(fetchedProjectEntry.tags),
       });
     }
   }, [projectEntryId, fetchedProjectEntry, reset]);
@@ -94,9 +90,9 @@ export default function ProjectEntryForm({
         .filter((files) => !files.data)
         .map((file) => file.url);
       return Promise.all(
-        existingPictureUrls.map((existingPictureUrl) => {
-          if (!pictureUrls.includes(existingPictureUrl)) {
-            return deleteFile(existingPictureUrl);
+        existingPictureUrls.map((it) => {
+          if (!pictureUrls.includes(it)) {
+            return deleteFile(it);
           }
           return null;
         })
@@ -105,8 +101,8 @@ export default function ProjectEntryForm({
 
     const convertReactTagsToFirebaseObject = () => {
       const obj: { [name: string]: true } = {};
-      data.reactTags.forEach((reactTag) => {
-        obj[reactTag.id] = true;
+      data.tags.forEach((it) => {
+        obj[it] = true;
       });
       return obj;
     };
@@ -127,14 +123,14 @@ export default function ProjectEntryForm({
           ...data.projectEntryForm,
           tags: convertReactTagsToFirebaseObject(),
           pictureUrls: [...fileUrlsToKeep, ...successUploadedPictureUrls],
-          updatedAt: timestamp() as firebase.firestore.Timestamp,
+          updatedAt: Timestamp.now(),
         });
       } else {
         await createProjectEntry({
           ...data.projectEntryForm,
           tags: convertReactTagsToFirebaseObject(),
           pictureUrls: successUploadedPictureUrls,
-          updatedAt: timestamp() as firebase.firestore.Timestamp,
+          updatedAt: Timestamp.now(),
         });
       }
       Router.push('/admindashboard');
@@ -142,140 +138,147 @@ export default function ProjectEntryForm({
     submit();
   };
 
-  const KeyCodes = {
-    comma: 188,
-    enter: 13,
-  };
-  const delimiters = [KeyCodes.comma, KeyCodes.enter];
   return (
-    <>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <ErrorAlert
-          errors={[
-            ...projectEntryErrors,
-            ...storageErrors,
-            ...tagSuggestionsErrors,
-          ]}
-        />
-        <FormGroup>
-          <Label for="title">Title</Label>
-          <Controller
-            name="projectEntryForm.title"
-            control={control}
-            defaultValue=""
-            render={({ field }) => <Input type="text" {...field} />}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="repoLink">Repository Link</Label>
-          <Controller
-            name="projectEntryForm.repoLink"
-            control={control}
-            defaultValue=""
-            render={({ field }) => <Input type="text" {...field} />}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="demoLink">Demo Link</Label>
-          <Controller
-            name="projectEntryForm.demoLink"
-            control={control}
-            defaultValue=""
-            render={({ field }) => <Input type="text" {...field} />}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="completionStatus">Completion Status</Label>
-          <Controller
-            name="projectEntryForm.completionStatus"
-            control={control}
-            render={({ field }) => (
-              <Input type="select" {...field}>
-                <option value="inProgress">In Progress</option>
-                <option value="onHold">On Hold</option>
-                <option value="completed">Completed</option>
-              </Input>
-            )}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="tags">Tags</Label>
-          <Controller
-            name="reactTags"
-            control={control}
-            defaultValue={[]}
-            render={({ field }) => (
-              <ReactTags
-                id="tags"
-                tags={field.value}
-                handleAddition={(tag) => {
-                  setValue('reactTags', [...field.value, tag]);
-                }}
-                handleDelete={(i) => {
-                  setValue(
-                    'reactTags',
-                    field.value.filter((tag, index) => index !== i)
-                  );
-                }}
-                handleDrag={(tag, currPos, newPos) => {
-                  const newTags = field.value.slice();
-                  newTags.splice(currPos, 1);
-                  newTags.splice(newPos, 0, tag);
-                  setValue('reactTags', newTags);
-                }}
-                delimiters={delimiters}
-                suggestions={tagSuggestions.map((tag) => ({
-                  id: tag,
-                  text: tag,
-                }))}
-              />
-            )}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label for="introDescription">Intro Description</Label>
-          <Controller
-            name="projectEntryForm.introDescription"
-            control={control}
-            defaultValue=""
-            render={({ field }) => <Input type="text" {...field} />}
-          />
-        </FormGroup>
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <ErrorAlert
+        errors={[
+          ...projectEntryErrors,
+          ...storageErrors,
+          ...tagSuggestionsErrors,
+        ]}
+      />
+      <Form.Group>
+        <Form.Label for="title">Title</Form.Label>
         <Controller
-          name="projectEntryForm.description"
+          name="projectEntryForm.title"
           control={control}
-          defaultValue={fetchedProjectEntry?.description}
+          defaultValue=""
+          render={({ field }) => <Form.Control type="text" {...field} />}
+        />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label for="repoLink">Repository Link</Form.Label>
+        <Controller
+          name="projectEntryForm.repoLink"
+          control={control}
+          defaultValue=""
+          render={({ field }) => <Form.Control type="text" {...field} />}
+        />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label for="demoLink">Demo Link</Form.Label>
+        <Controller
+          name="projectEntryForm.demoLink"
+          control={control}
+          defaultValue=""
+          render={({ field }) => <Form.Control type="text" {...field} />}
+        />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label for="completionStatus">Completion Status</Form.Label>
+        <Controller
+          name="projectEntryForm.completionStatus"
+          control={control}
           render={({ field }) => (
-            <MarkdownEditorInput
-              label="Description"
-              id="description"
-              handleTextChange={field.onChange}
-              text={field.value}
+            <Form.Select {...field}>
+              <option value="inProgress">In Progress</option>
+              <option value="onHold">On Hold</option>
+              <option value="completed">Completed</option>
+            </Form.Select>
+          )}
+        />
+      </Form.Group>
+      {/* <Form.Group>
+        <Form.Label for="tags">Tags</Form.Label>
+        <Controller
+          name="reactTags"
+          control={control}
+          defaultValue={[]}
+          render={({ field }) => (
+            <ReactTags
+              id="tags"
+              tags={field.value}
+              handleAddition={(tag) => {
+                setValue('reactTags', [...field.value, tag]);
+              }}
+              handleDelete={(i) => {
+                setValue(
+                  'reactTags',
+                  field.value.filter((tag, index) => index !== i)
+                );
+              }}
+              handleDrag={(tag, currPos, newPos) => {
+                const newTags = field.value.slice();
+                newTags.splice(currPos, 1);
+                newTags.splice(newPos, 0, tag);
+                setValue('reactTags', newTags);
+              }}
+              delimiters={delimiters}
+              suggestions={tagSuggestions.map((tag) => ({
+                id: tag,
+                text: tag,
+              }))}
             />
           )}
         />
-        <FormGroup>
-          <Label for="pictures">Pictures</Label>
-          <Controller
-            name="pictureFiles"
-            control={control}
-            defaultValue={[]}
-            render={({ field }) => (
-              <UploadInput
-                id="pictures"
-                setFileInputs={(files: FileInput[]) => {
-                  setValue('pictureFiles', files);
-                }}
-                fileInputs={field.value}
-              />
-            )}
+      </Form.Group> */}
+      <Form.Group>
+        <Form.Label for="tags">Tags</Form.Label>
+        <Controller
+          name="tags"
+          control={control}
+          defaultValue={[]}
+          render={({ field }) => (
+            <TagsInput
+              value={field.value}
+              onChange={(it: string[]) => setValue('tags', it)}
+            />
+          )}
+        />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label for="introDescription">Intro Description</Form.Label>
+        <Controller
+          name="projectEntryForm.introDescription"
+          control={control}
+          defaultValue=""
+          render={({ field }) => <Form.Control type="text" {...field} />}
+        />
+      </Form.Group>
+      <Controller
+        name="projectEntryForm.description"
+        control={control}
+        defaultValue={fetchedProjectEntry?.description}
+        render={({ field }) => (
+          <MarkdownEditorInput
+            label="Description"
+            id="description"
+            handleTextChange={field.onChange}
+            text={field.value}
           />
-        </FormGroup>
-        <Button color="primary" type="submit" disabled={disabled}>
-          save
-        </Button>
-        {loading ? <Spinner /> : null}
-      </Form>
-    </>
+        )}
+      />
+      <Form.Group>
+        <Form.Label for="pictures">Pictures</Form.Label>
+        <Controller
+          name="pictureFiles"
+          control={control}
+          defaultValue={[]}
+          render={({ field }) => (
+            <UploadInput
+              id="pictures"
+              setFileInputs={(files: FileInput[]) => {
+                setValue('pictureFiles', files);
+              }}
+              fileInputs={field.value}
+            />
+          )}
+        />
+      </Form.Group>
+      <Button color="primary" type="submit" disabled={disabled}>
+        save
+      </Button>
+      {loading ? <Spinner animation="border" /> : null}
+    </Form>
   );
 }

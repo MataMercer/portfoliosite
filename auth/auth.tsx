@@ -1,7 +1,12 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import Router from 'next/router';
 // eslint-disable-next-line no-unused-vars
-import firebase from 'firebase/app';
+import {
+  User,
+  browserLocalPersistence,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
 import { auth } from '../firebase/config';
 
 type AuthContextProps = {
@@ -9,7 +14,7 @@ type AuthContextProps = {
   logout: () => void;
   loading: boolean;
   isAuthenticated: boolean;
-  user: firebase.User | null;
+  user: User | null;
 };
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
@@ -18,13 +23,13 @@ type AuthProviderProps = {
   children: React.ReactNode;
 };
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<firebase.User | null>(null);
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function loadUser() {
       // observer to check if the user is logged in
-      auth?.onAuthStateChanged((userObservation: firebase.User | null) => {
+      auth?.onAuthStateChanged((userObservation: User | null) => {
         if (userObservation) {
           // User is signed in.
           setUser(userObservation);
@@ -46,13 +51,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const login = async (email: string, password: string) => {
-    return auth
-      ?.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .then(async () => {
-        await firebase.auth().signInWithEmailAndPassword(email, password);
-        setUser(firebase.auth().currentUser);
-        redirectAfterLogin();
-      });
+    return auth?.setPersistence(browserLocalPersistence).then(async () => {
+      await signInWithEmailAndPassword(auth, email, password);
+      setUser(auth.currentUser);
+      redirectAfterLogin();
+    });
   };
 
   const logout = () => {
@@ -63,19 +66,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         redirectAfterLogout();
         // Sign-out successful.
       })
-      .catch((error: firebase.FirebaseError) => {
+      .catch((error: FirebaseError) => {
         // An error happened.
       });
   };
 
   return (
     <AuthContext.Provider
+      // eslint-disable-next-line react/jsx-no-constructed-context-values
       value={{ isAuthenticated: !!user, user, login, loading, logout }}
     >
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = () => {
   const authContext = useContext(AuthContext);
