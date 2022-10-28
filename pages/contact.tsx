@@ -24,7 +24,7 @@ export default function Contact() {
           </Form.Group>
           <Form.Group>
             <Form.Label for="exampleText">Message</Form.Label>
-            <Form.Control type="textarea" name="message" id="message" />
+            <Form.Control as="textarea" rows={15} name="message" id="message" />
           </Form.Group>
           <Button color="primary" type="submit">
             Send
